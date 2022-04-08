@@ -1,3 +1,5 @@
 export interface TestResponse {
-    body?: any;
+    status?: number;
+    data?: any;
+    errorMessage?: string;
 }

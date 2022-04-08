@@ -40,4 +40,3 @@ class TestRig {
     }
 }
 exports.TestRig = TestRig;
-//# sourceMappingURL=TestRig.js.map

@@ -1,4 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosRequestHeaders, Method } from 'axios';
+import { TestResponse } from './TestResponse';
 import { TestRig } from './TestRig';
 
 const DEFAULT_REQUEST_TIMEOUT = 5000;
@@ -93,9 +94,45 @@ export class TestConnector {
     return result;
   }
 
-  async request(request: TestConnectorMethodRequest): Promise<any> {
+  async request(request: TestConnectorMethodRequest): Promise<TestResponse> {
     const config = this.constructCompositeAxiosConfig(request);
-    return axios.request(config);
+    try {
+      const rsp = await axios.request(config);
+      return {
+        status: rsp.status,
+        data: rsp.data,
+      };
+    } catch (error: any) {
+      if (!error.response) {
+        // No response at all was received, e.g. timeout or invalid URL
+        throw error;
+      }
+      return {
+        status: error.response.status,
+        errorMessage: error.response.statusText,
+        data: error.response.data,
+      };
+    }
+  }
+
+  async get(request: TestConnectorRequest): Promise<TestResponse> {
+    return this.request({ ...request, method: 'GET' });
+  }
+
+  async put(request: TestConnectorRequest): Promise<TestResponse> {
+    return this.request({ ...request, method: 'PUT' });
+  }
+
+  async patch(request: TestConnectorRequest): Promise<TestResponse> {
+    return this.request({ ...request, method: 'PATCH' });
+  }
+
+  async post(request: TestConnectorRequest): Promise<TestResponse> {
+    return this.request({ ...request, method: 'POST' });
+  }
+
+  async delete(request: TestConnectorRequest): Promise<TestResponse> {
+    return this.request({ ...request, method: 'DELETE' });
   }
 }
 

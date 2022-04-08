@@ -19,4 +19,3 @@ __exportStar(require("./TestReporter"), exports);
 __exportStar(require("./TestRig"), exports);
 __exportStar(require("./TestRigRunContext"), exports);
 __exportStar(require("./TestRigTestRequest"), exports);
-//# sourceMappingURL=index.js.map
