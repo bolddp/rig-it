@@ -1,6 +1,7 @@
 import axios, { AxiosRequestConfig, AxiosRequestHeaders, Method } from 'axios';
+import { TestConnectorLogger, TestLogger } from '../Loggers';
 import { TestResponse } from './TestResponse';
-import { TestRig } from './TestRig';
+import { TestRig } from '../rig/TestRig';
 
 const DEFAULT_REQUEST_TIMEOUT = 5000;
 
@@ -96,8 +97,17 @@ export class TestConnector {
 
   async request(request: TestConnectorMethodRequest): Promise<TestResponse> {
     const config = this.constructCompositeAxiosConfig(request);
+    const ts = Date.now();
+    this.config.log?.request(
+      `${config.method} ${config.baseURL}${axios.getUri(config)}`
+    );
     try {
       const rsp = await axios.request(config);
+      this.config.log?.success(
+        `${config.method} HTTP ${rsp.status} - ${
+          JSON.stringify(rsp.data ?? '').length
+        } bytes in ${Date.now() - ts} ms`
+      );
       return {
         status: rsp.status,
         data: rsp.data,
@@ -105,13 +115,18 @@ export class TestConnector {
     } catch (error: any) {
       if (!error.response) {
         // No response at all was received, e.g. timeout or invalid URL
+        this.config.log?.failure(
+          `${config.method} failed in ${Date.now() - ts} ms : ${error.message}`
+        );
         throw error;
       }
-      return {
+      const rsp: TestResponse = {
         status: error.response.status,
         errorMessage: error.response.statusText,
         data: error.response.data,
       };
+      this.config.log?.failure(`Failed: ${JSON.stringify(rsp)}`);
+      return rsp;
     }
   }
 
@@ -140,6 +155,7 @@ export type RequestParams = { [key: string]: any };
 
 export interface TestConnectorConfig {
   baseUrl: string;
+  log?: TestConnectorLogger;
   timeoutMs?: number;
 }
 

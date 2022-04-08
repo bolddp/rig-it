@@ -1,10 +1,10 @@
-import { TestConnector, TestConnectorConfig } from './TestConnector';
-import { TestReporter } from './TestReporter';
+import { TestReporter } from '../reporter/TestReporter';
+import { TestConnector, TestConnectorConfig } from '../connector/TestConnector';
 import { TestRig } from './TestRig';
 import { TestRigTestRequest } from './TestRigTestRequest';
 export interface TestRigRunContext {
     rig: TestRig;
-    reporter: TestReporter;
+    reporter?: TestReporter;
     createConnector(config: TestConnectorConfig): TestConnector;
     test(request: TestRigTestRequest): Promise<any>;
 }
