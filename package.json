@@ -1,0 +1,32 @@
+{
+  "name": "rig-it",
+  "version": "0.0.1",
+  "description": "Test rig for writing reproducable integration tests in Node.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "clean": "node ./node_modules/rimraf/bin.js ./dist",
+    "test": "jest --config=./jest.config.json",
+    "coverage": "jest --config=./jest.config.json --coverage",
+    "npm:publish": "npm run clean:build && npm publish",
+    "clean:build": "npm run clean && node ./node_modules/typescript/bin/tsc --sourcemap false"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bolddp/rig-it.git"
+  },
+  "author": "Daniel Persson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bolddp/rig-it/issues"
+  },
+  "homepage": "https://github.com/bolddp/rig-it#readme",
+  "dependencies": {
+    "axios": "^0.26.1",
+    "expect": "^27.5.1"
+  },
+  "files": [
+    "/dist",
+    "README.md"
+  ]
+}
