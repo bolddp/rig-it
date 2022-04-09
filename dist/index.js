@@ -15,8 +15,12 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./connector/TestConnector"), exports);
+__exportStar(require("./connector/TestResponse"), exports);
+__exportStar(require("./logger/ConsoleLogger"), exports);
+__exportStar(require("./logger/TestLogger"), exports);
 __exportStar(require("./reporter/TestReporter"), exports);
 __exportStar(require("./rig/TestRig"), exports);
 __exportStar(require("./rig/TestRigRunContext"), exports);
-__exportStar(require("./rig/TestRigTestRequest"), exports);
-__exportStar(require("./Loggers"), exports);
+__exportStar(require("./test/Test"), exports);
+__exportStar(require("./test/TestRequest"), exports);
+__exportStar(require("./test/TestStepContext"), exports);

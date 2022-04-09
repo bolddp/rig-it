@@ -1,7 +1,7 @@
 import { AxiosRequestHeaders, Method } from 'axios';
-import { TestConnectorLogger } from '../Loggers';
 import { TestResponse } from './TestResponse';
 import { TestRig } from '../rig/TestRig';
+import { TestLogger } from '../logger/TestLogger';
 export declare class TestConnector {
     private rig;
     private config;
@@ -31,7 +31,7 @@ export declare type RequestParams = {
 };
 export interface TestConnectorConfig {
     baseUrl: string;
-    log?: TestConnectorLogger;
+    logger?: TestLogger;
     timeoutMs?: number;
 }
 export interface TestConnectorRequest {

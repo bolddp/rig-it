@@ -1,11 +1,11 @@
-import expect from 'expect';
 import { TestResponse } from '../connector/TestResponse';
-export interface TestRigTestRequest {
-    testName: string;
-    setup?: () => Promise<void>;
-    execute: () => Promise<TestResponse>;
-    assert?: (rsp: TestResponse, expct: typeof expect) => Promise<void>;
-    assertError?: (rsp: TestResponse) => Promise<void>;
+import { TestStepContext, TestStepResponseContext } from './TestStepContext';
+export interface TestRequest {
+    id: string;
+    arrange?: (ctx: TestStepContext) => Promise<void>;
+    act: (ctx: TestStepContext) => Promise<TestResponse>;
+    assert?: (ctx: TestStepResponseContext) => Promise<void>;
+    assertError?: TestStepResponseCtxFnc;
     /**
      * Add cleanup code here, e.g. deletion of a resource that the test creates, that should be run
      * only if the test rig fails at some point.
@@ -14,10 +14,11 @@ export interface TestRigTestRequest {
      * reverse order of how they were declared, e.g. the onRigFailure code of an early test will be
      * executed after the onRigFailure code of a later test.
      */
-    onRigFailure?: (rsp: TestResponse) => Promise<void>;
+    onRigFailureTeardown?: TestStepResponseCtxFnc;
     /**
      * Add cleanup code here, e.g. deletion of a resource that the test creates, that should be run
      * only if the test rig succeeds.
      */
-    onRigSuccess?: (rsp: TestResponse) => Promise<void>;
+    onRigSuccessTeardown?: TestStepResponseCtxFnc;
 }
+export declare type TestStepResponseCtxFnc = (ctx: TestStepResponseContext) => Promise<void>;

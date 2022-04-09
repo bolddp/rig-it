@@ -23,14 +23,14 @@
   "homepage": "https://github.com/bolddp/rig-it#readme",
   "dependencies": {
     "axios": "0.26.1",
-    "chalk": "4.1.2",
-    "expect": "27.5.1"
+    "chalk": "4.1.2"
   },
   "files": [
     "/dist",
     "README.md"
   ],
   "devDependencies": {
+    "@types/node": "17.0.23",
     "rimraf": "3.0.2",
     "ts-node": "10.7.0",
     "typescript": "4.6.3"

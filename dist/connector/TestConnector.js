@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TestConnector = void 0;
 const axios_1 = __importDefault(require("axios"));
+const TestLogger_1 = require("../logger/TestLogger");
 const DEFAULT_REQUEST_TIMEOUT = 5000;
 class TestConnector {
     constructor(rig, config) {
@@ -85,31 +86,33 @@ class TestConnector {
         return result;
     }
     request(request) {
-        var _a, _b, _c, _d, _e;
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             const config = this.constructCompositeAxiosConfig(request);
             const ts = Date.now();
-            (_a = this.config.log) === null || _a === void 0 ? void 0 : _a.request(`${config.method} ${config.baseURL}${axios_1.default.getUri(config)}`);
+            (_a = this.config.logger) === null || _a === void 0 ? void 0 : _a.gray(TestLogger_1.Indent.TestContent, `${config.method} ${config.baseURL}${axios_1.default.getUri(config)}`);
             try {
                 const rsp = yield axios_1.default.request(config);
-                (_b = this.config.log) === null || _b === void 0 ? void 0 : _b.success(`${config.method} HTTP ${rsp.status} - ${JSON.stringify((_c = rsp.data) !== null && _c !== void 0 ? _c : '').length} bytes in ${Date.now() - ts} ms`);
                 return {
+                    isOk: true,
                     status: rsp.status,
+                    headers: rsp.headers,
                     data: rsp.data,
                 };
             }
             catch (error) {
                 if (!error.response) {
                     // No response at all was received, e.g. timeout or invalid URL
-                    (_d = this.config.log) === null || _d === void 0 ? void 0 : _d.failure(`${config.method} failed in ${Date.now() - ts} ms : ${error.message}`);
+                    (_b = this.config.logger) === null || _b === void 0 ? void 0 : _b.red(TestLogger_1.Indent.TestContent, `${config.method} failed in ${Date.now() - ts} ms : ${error.message}`);
                     throw error;
                 }
                 const rsp = {
+                    isOk: false,
                     status: error.response.status,
+                    headers: error.response.headers,
                     errorMessage: error.response.statusText,
                     data: error.response.data,
                 };
-                (_e = this.config.log) === null || _e === void 0 ? void 0 : _e.failure(`Failed: ${JSON.stringify(rsp)}`);
                 return rsp;
             }
         });
