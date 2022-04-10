@@ -16,6 +16,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./connector/TestConnector"), exports);
 __exportStar(require("./connector/TestResponse"), exports);
+// export * from './logger/CompositeLogger'; Intentionally not exported
 __exportStar(require("./logger/ConsoleLogger"), exports);
 __exportStar(require("./logger/TestLogger"), exports);
 __exportStar(require("./reporter/TestReporter"), exports);

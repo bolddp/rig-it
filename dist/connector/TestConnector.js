@@ -86,26 +86,28 @@ class TestConnector {
         return result;
     }
     request(request) {
-        var _a, _b;
+        var _a, _b, _c, _d, _e, _f;
         return __awaiter(this, void 0, void 0, function* () {
             const config = this.constructCompositeAxiosConfig(request);
             const ts = Date.now();
             (_a = this.config.logger) === null || _a === void 0 ? void 0 : _a.gray(TestLogger_1.Indent.TestContent, `${config.method} ${config.baseURL}${axios_1.default.getUri(config)}`);
             try {
-                const rsp = yield axios_1.default.request(config);
+                const response = yield axios_1.default.request(config);
+                (_b = this.config.logger) === null || _b === void 0 ? void 0 : _b.green(TestLogger_1.Indent.TestContent, `HTTP ${response.status} - ${JSON.stringify((_c = response.data) !== null && _c !== void 0 ? _c : '').length} bytes in ${Date.now() - ts} ms`);
                 return {
                     isOk: true,
-                    status: rsp.status,
-                    headers: rsp.headers,
-                    data: rsp.data,
+                    status: response.status,
+                    headers: response.headers,
+                    data: response.data,
                 };
             }
             catch (error) {
                 if (!error.response) {
                     // No response at all was received, e.g. timeout or invalid URL
-                    (_b = this.config.logger) === null || _b === void 0 ? void 0 : _b.red(TestLogger_1.Indent.TestContent, `${config.method} failed in ${Date.now() - ts} ms : ${error.message}`);
+                    (_d = this.config.logger) === null || _d === void 0 ? void 0 : _d.red(TestLogger_1.Indent.TestContent, `${config.method} failed in ${Date.now() - ts} ms : ${error.message}`);
                     throw error;
                 }
+                (_e = this.config.logger) === null || _e === void 0 ? void 0 : _e.red(TestLogger_1.Indent.TestContent, `HTTP ${error.response.status} - ${JSON.stringify((_f = error.response.data) !== null && _f !== void 0 ? _f : '').length} bytes in ${Date.now() - ts} ms`);
                 const rsp = {
                     isOk: false,
                     status: error.response.status,

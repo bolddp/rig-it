@@ -16,7 +16,7 @@ class Test {
         this.config = config;
     }
     execute(request) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
+        var _a, _b, _c, _d, _e, _f, _g, _h;
         return __awaiter(this, void 0, void 0, function* () {
             const ctx = {
                 rig: this.config.rig,
@@ -30,34 +30,34 @@ class Test {
             if (response.isOk) {
                 if (!request.assertError) {
                     // Expected and got success
-                    (_b = this.config.logger) === null || _b === void 0 ? void 0 : _b.green(TestLogger_1.Indent.TestContent, `Success : HTTP ${response.status} - ${JSON.stringify((_c = response.data) !== null && _c !== void 0 ? _c : '').length} bytes in ${Date.now() - ts} ms`);
+                    (_b = this.config.logger) === null || _b === void 0 ? void 0 : _b.green(TestLogger_1.Indent.TestContent, 'Test succeeded');
                     // Adding teardown entry before the assertion to get proper teardown
                     this.addTeardownEntries({ request, testStepResponseContext });
                     try {
-                        yield ((_d = request.assert) === null || _d === void 0 ? void 0 : _d.call(request, testStepResponseContext));
+                        yield ((_c = request.assert) === null || _c === void 0 ? void 0 : _c.call(request, testStepResponseContext));
                     }
                     catch (error) {
-                        (_e = this.config.logger) === null || _e === void 0 ? void 0 : _e.red(TestLogger_1.Indent.TestContent, `Assertion failed! ${error.message.replace(/[\r\n]/g, ', ')}`);
+                        (_d = this.config.logger) === null || _d === void 0 ? void 0 : _d.red(TestLogger_1.Indent.TestContent, `Assertion failed! ${error.message.replace(/[\r\n]/g, ', ')}`);
                         throw new Error('Assertion failed');
                     }
                 }
                 else {
                     // Expected failure, got success
-                    (_f = this.config.logger) === null || _f === void 0 ? void 0 : _f.red(TestLogger_1.Indent.TestContent, `Unexpected success : HTTP ${response.status} - ${JSON.stringify((_g = response.data) !== null && _g !== void 0 ? _g : '').length} bytes in ${Date.now() - ts} ms`);
+                    (_e = this.config.logger) === null || _e === void 0 ? void 0 : _e.red(TestLogger_1.Indent.TestContent, 'Test succeeded when expected to fail');
                     throw new Error('Unexpected success');
                 }
             }
             else {
                 if (!request.assertError) {
                     // Expected success, but the test failed
-                    (_h = this.config.logger) === null || _h === void 0 ? void 0 : _h.red(TestLogger_1.Indent.TestContent, `Unexpected failure : HTTP ${response.status} - ${JSON.stringify((_j = response.data) !== null && _j !== void 0 ? _j : '').length} bytes in ${Date.now() - ts} ms`);
+                    (_f = this.config.logger) === null || _f === void 0 ? void 0 : _f.red(TestLogger_1.Indent.TestContent, 'Test failed');
                     throw new Error('Unexpected failure');
                 }
                 else {
                     // Expected and got failure
-                    (_k = this.config.logger) === null || _k === void 0 ? void 0 : _k.green(TestLogger_1.Indent.TestContent, `Expected failure : HTTP ${response.status} - ${JSON.stringify((_l = response.data) !== null && _l !== void 0 ? _l : '').length} bytes in ${Date.now() - ts} ms`);
+                    (_g = this.config.logger) === null || _g === void 0 ? void 0 : _g.green(TestLogger_1.Indent.TestContent, 'Test failed like expected');
                     this.addTeardownEntries({ request, testStepResponseContext });
-                    yield ((_m = request.assertError) === null || _m === void 0 ? void 0 : _m.call(request, testStepResponseContext));
+                    yield ((_h = request.assertError) === null || _h === void 0 ? void 0 : _h.call(request, testStepResponseContext));
                 }
             }
         });

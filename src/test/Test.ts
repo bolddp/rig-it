@@ -30,12 +30,7 @@ export class Test {
     if (response.isOk) {
       if (!request.assertError) {
         // Expected and got success
-        this.config.logger?.green(
-          Indent.TestContent,
-          `Success : HTTP ${response.status} - ${
-            JSON.stringify(response.data ?? '').length
-          } bytes in ${Date.now() - ts} ms`
-        );
+        this.config.logger?.green(Indent.TestContent, 'Test succeeded');
 
         // Adding teardown entry before the assertion to get proper teardown
         this.addTeardownEntries({ request, testStepResponseContext });
@@ -51,37 +46,18 @@ export class Test {
         }
       } else {
         // Expected failure, got success
-        this.config.logger?.red(
-          Indent.TestContent,
-          `Unexpected success : HTTP ${response.status} - ${
-            JSON.stringify(response.data ?? '').length
-          } bytes in ${Date.now() - ts} ms`
-        );
-
+        this.config.logger?.red(Indent.TestContent, 'Test succeeded when expected to fail');
         throw new Error('Unexpected success');
       }
     } else {
       if (!request.assertError) {
         // Expected success, but the test failed
-        this.config.logger?.red(
-          Indent.TestContent,
-          `Unexpected failure : HTTP ${response.status} - ${
-            JSON.stringify(response.data ?? '').length
-          } bytes in ${Date.now() - ts} ms`
-        );
-
+        this.config.logger?.red(Indent.TestContent, 'Test failed');
         throw new Error('Unexpected failure');
       } else {
         // Expected and got failure
-        this.config.logger?.green(
-          Indent.TestContent,
-          `Expected failure : HTTP ${response.status} - ${
-            JSON.stringify(response.data ?? '').length
-          } bytes in ${Date.now() - ts} ms`
-        );
-
+        this.config.logger?.green(Indent.TestContent, 'Test failed like expected');
         this.addTeardownEntries({ request, testStepResponseContext });
-
         await request.assertError?.(testStepResponseContext);
       }
     }

@@ -103,12 +103,18 @@ export class TestConnector {
       `${config.method} ${config.baseURL}${axios.getUri(config)}`
     );
     try {
-      const rsp = await axios.request(config);
+      const response = await axios.request(config);
+      this.config.logger?.green(
+        Indent.TestContent,
+        `HTTP ${response.status} - ${JSON.stringify(response.data ?? '').length} bytes in ${
+          Date.now() - ts
+        } ms`
+      );
       return {
         isOk: true,
-        status: rsp.status,
-        headers: rsp.headers,
-        data: rsp.data,
+        status: response.status,
+        headers: response.headers,
+        data: response.data,
       };
     } catch (error: any) {
       if (!error.response) {
@@ -119,6 +125,12 @@ export class TestConnector {
         );
         throw error;
       }
+      this.config.logger?.red(
+        Indent.TestContent,
+        `HTTP ${error.response.status} - ${
+          JSON.stringify(error.response.data ?? '').length
+        } bytes in ${Date.now() - ts} ms`
+      );
       const rsp: TestResponse = {
         isOk: false,
         status: error.response.status,
