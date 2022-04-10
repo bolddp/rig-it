@@ -24,7 +24,10 @@ export class TestRig {
   }
 
   createCompositeLogger(loggers?: TestLogger[]): CompositeLogger {
-    return new CompositeLogger(loggers ?? [new ConsoleLogger()]);
+    if ((loggers ?? []).length == 0) {
+      loggers = [new ConsoleLogger()];
+    }
+    return new CompositeLogger(loggers!);
   }
 
   async run(fnc: (ctx: TestRigRunContext) => Promise<any>) {
@@ -53,14 +56,11 @@ export class TestRig {
       });
       this.logger.blue(
         Indent.TestRig,
-        `${this.config?.name ? `Finished: ${this.config.name}` : 'Finished'} - Starting teardown`
+        this.config?.name ? `Finished: ${this.config.name}` : 'Finished'
       );
       await this.performSuccessTeardown();
     } catch (error: any) {
-      this.logger.red(
-        Indent.TestRig,
-        `${this.config?.name ? `Failed: ${this.config.name}` : 'Failed'} - Starting teardown`
-      );
+      this.logger.red(Indent.TestRig, this.config?.name ? `Failed: ${this.config.name}` : 'Failed');
       await this.performFailureTeardown();
     }
     await this.logger.finish?.();
@@ -87,6 +87,10 @@ export class TestRig {
   }
 
   async performSuccessTeardown(): Promise<void> {
+    if (this.rigSuccessTeardownEntries.length == 0) {
+      return;
+    }
+    this.logger.blue(Indent.TestRig, 'Starting teardown after test success');
     for (const entry of this.rigSuccessTeardownEntries) {
       this.logger.white(Indent.TestHeader, `Tearing down on success: ${entry.request.id}`);
       try {
@@ -95,9 +99,14 @@ export class TestRig {
         // Only log, all teardown steps should be attempted
       }
     }
+    this.logger.blue(Indent.TestRig, 'Teardown after test success completed');
   }
 
   async performFailureTeardown(): Promise<void> {
+    if (this.rigFailureTeardownEntries.length == 0) {
+      return;
+    }
+    this.logger.blue(Indent.TestRig, 'Starting teardown after test failure');
     for (const entry of this.rigFailureTeardownEntries) {
       this.logger.white(Indent.TestHeader, `Tearing down on failure: ${entry.request.id}`);
       try {
@@ -106,6 +115,7 @@ export class TestRig {
         // Only log, all teardown steps should be attempted
       }
     }
+    this.logger.blue(Indent.TestRig, 'Teardown after test failure completed');
   }
 }
 

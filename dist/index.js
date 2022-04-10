@@ -18,6 +18,7 @@ __exportStar(require("./connector/TestConnector"), exports);
 __exportStar(require("./connector/TestResponse"), exports);
 // export * from './logger/CompositeLogger'; Intentionally not exported
 __exportStar(require("./logger/ConsoleLogger"), exports);
+__exportStar(require("./logger/HtmlLogger"), exports);
 __exportStar(require("./logger/TestLogger"), exports);
 __exportStar(require("./reporter/TestReporter"), exports);
 __exportStar(require("./rig/TestRig"), exports);

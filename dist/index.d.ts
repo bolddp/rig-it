@@ -1,6 +1,7 @@
 export * from './connector/TestConnector';
 export * from './connector/TestResponse';
 export * from './logger/ConsoleLogger';
+export * from './logger/HtmlLogger';
 export * from './logger/TestLogger';
 export * from './reporter/TestReporter';
 export * from './rig/TestRig';

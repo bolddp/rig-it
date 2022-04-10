@@ -1,5 +1,3 @@
-import chalk from 'chalk';
-
 export interface TestLogger {
   setup?(): Promise<void>;
   white(indent: Indent, msg: string): void;
