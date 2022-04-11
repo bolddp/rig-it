@@ -15,8 +15,20 @@ export class Test {
     const ctx: TestStepContext = {
       rig: this.config.rig,
       test: this,
+      removeFailureTeardown: (id) => {
+        const count = this.config.rig.removeRigFailureTeardown(id);
+      },
+      removeSuccessTeardown: (id) => {
+        const count = this.config.rig.removeRigSuccessTeardown(id);
+      },
     };
     this.config.logger.white(Indent.TestHeader, `Test: ${request.id}`);
+
+    if (request.assert && request.assertError) {
+      throw new Error(
+        `Invalid setup for test ${request.id}: either assert() or assertError() can be set but not both`
+      );
+    }
 
     await request.arrange?.(ctx);
 
@@ -30,29 +42,24 @@ export class Test {
     if (response.isOk) {
       if (!request.assertError) {
         // Expected and got success
-        this.config.logger?.green(Indent.TestContent, 'Test succeeded');
-
         // Adding teardown entry before the assertion to get proper teardown
         this.addTeardownEntries({ request, testStepResponseContext });
 
         try {
           await request.assert?.(testStepResponseContext);
+          this.config.logger?.green(Indent.TestContent, 'Test succeeded');
         } catch (error: any) {
-          this.config.logger?.red(
-            Indent.TestContent,
-            `Assertion failed! ${error.message.replace(/[\r\n]/g, ', ')}`
-          );
-          throw new Error('Assertion failed');
+          throw new Error(`Assertion failed! ${error.message.replace(/[\r\n]/g, ', ')}`);
         }
       } else {
         // Expected failure, got success
-        this.config.logger?.red(Indent.TestContent, 'Test succeeded when expected to fail');
+        // this.config.logger?.red(Indent.TestContent, 'Test succeeded when expected to fail');
         throw new Error('Unexpected success');
       }
     } else {
       if (!request.assertError) {
         // Expected success, but the test failed
-        this.config.logger?.red(Indent.TestContent, 'Test failed');
+        // this.config.logger?.red(Indent.TestContent, 'Test failed');
         throw new Error('Unexpected failure');
       } else {
         // Expected and got failure

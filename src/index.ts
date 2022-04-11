@@ -1,6 +1,5 @@
 export * from './connector/TestConnector';
 export * from './connector/TestResponse';
-// export * from './logger/CompositeLogger'; Intentionally not exported
 export * from './logger/ConsoleLogger';
 export * from './logger/HtmlLogger';
 export * from './logger/TestLogger';

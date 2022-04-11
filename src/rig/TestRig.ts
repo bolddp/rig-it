@@ -47,11 +47,16 @@ export class TestRig {
           });
         },
         test: async (request: TestRequest): Promise<any> => {
-          const test = new Test({
-            rig: this,
-            logger: this.logger,
-          });
-          await test.execute(request);
+          try {
+            const test = new Test({
+              rig: this,
+              logger: this.logger,
+            });
+            await test.execute(request);
+          } catch (error: any) {
+            this.logger.red(Indent.TestContent, error.message);
+            throw error;
+          }
         },
       });
       this.logger.blue(

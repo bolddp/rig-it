@@ -45,11 +45,17 @@ class TestRig {
                         return new TestConnector_1.TestConnector(this, Object.assign(Object.assign({}, config), { logger: this.logger }));
                     },
                     test: (request) => __awaiter(this, void 0, void 0, function* () {
-                        const test = new Test_1.Test({
-                            rig: this,
-                            logger: this.logger,
-                        });
-                        yield test.execute(request);
+                        try {
+                            const test = new Test_1.Test({
+                                rig: this,
+                                logger: this.logger,
+                            });
+                            yield test.execute(request);
+                        }
+                        catch (error) {
+                            this.logger.red(TestLogger_1.Indent.TestContent, error.message);
+                            throw error;
+                        }
                     }),
                 });
                 this.logger.blue(TestLogger_1.Indent.TestRig, ((_e = this.config) === null || _e === void 0 ? void 0 : _e.name) ? `Finished: ${this.config.name}` : 'Finished');

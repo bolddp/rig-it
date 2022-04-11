@@ -1,4 +1,4 @@
-import { listeners } from 'process';
+import chalk from 'chalk';
 import { Indent, TestLogger } from './TestLogger';
 
 export type HtmlLoggerCallback = (html: string) => Promise<void>;
@@ -19,28 +19,33 @@ export class HtmlLogger implements TestLogger {
     this.callback = callback;
   }
 
-  private log(indent: Indent, color: string, msg: string) {
-    this.lines.push(`<p style="color: ${color}">${'&nbsp;'.repeat(indent * indentSize)}${msg}</p>`);
+  private htmlLog(indent: Indent, color: string, msg: string) {
+    this.lines.push(
+      `<p style="color: ${color}">${'&nbsp;'.repeat(indent * indentSize)}${msg.replace(
+        /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g,
+        ''
+      )}</p>`
+    );
   }
 
   white(indent: Indent, msg: string): void {
-    this.log(indent, whiteColor, msg);
+    this.htmlLog(indent, whiteColor, msg);
   }
 
   blue(indent: Indent, msg: string): void {
-    this.log(indent, blueColor, msg);
+    this.htmlLog(indent, blueColor, msg);
   }
 
   green(indent: Indent, msg: string): void {
-    this.log(indent, greenColor, msg);
+    this.htmlLog(indent, greenColor, msg);
   }
 
   red(indent: Indent, msg: string): void {
-    this.log(indent, redColor, msg);
+    this.htmlLog(indent, redColor, msg);
   }
 
   gray(indent: Indent, msg: string): void {
-    this.log(indent, grayColor, msg);
+    this.htmlLog(indent, grayColor, msg);
   }
 
   async finish(): Promise<void> {

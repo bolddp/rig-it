@@ -4,7 +4,7 @@ export declare class HtmlLogger implements TestLogger {
     private lines;
     private callback;
     constructor(callback: HtmlLoggerCallback);
-    private log;
+    private htmlLog;
     white(indent: Indent, msg: string): void;
     blue(indent: Indent, msg: string): void;
     green(indent: Indent, msg: string): void;

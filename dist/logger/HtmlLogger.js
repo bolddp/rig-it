@@ -21,23 +21,23 @@ class HtmlLogger {
         this.lines = [];
         this.callback = callback;
     }
-    log(indent, color, msg) {
-        this.lines.push(`<p style="color: ${color}">${'&nbsp;'.repeat(indent * indentSize)}${msg}</p>`);
+    htmlLog(indent, color, msg) {
+        this.lines.push(`<p style="color: ${color}">${'&nbsp;'.repeat(indent * indentSize)}${msg.replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '')}</p>`);
     }
     white(indent, msg) {
-        this.log(indent, whiteColor, msg);
+        this.htmlLog(indent, whiteColor, msg);
     }
     blue(indent, msg) {
-        this.log(indent, blueColor, msg);
+        this.htmlLog(indent, blueColor, msg);
     }
     green(indent, msg) {
-        this.log(indent, greenColor, msg);
+        this.htmlLog(indent, greenColor, msg);
     }
     red(indent, msg) {
-        this.log(indent, redColor, msg);
+        this.htmlLog(indent, redColor, msg);
     }
     gray(indent, msg) {
-        this.log(indent, grayColor, msg);
+        this.htmlLog(indent, grayColor, msg);
     }
     finish() {
         return __awaiter(this, void 0, void 0, function* () {

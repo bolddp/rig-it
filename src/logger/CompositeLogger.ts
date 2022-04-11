@@ -8,40 +8,44 @@ export class CompositeLogger implements TestLogger {
   }
 
   async setup() {
-    for (const logger of this.loggers) {
+    this.loggers.forEach((logger) => {
       logger.setup?.();
-    }
+    });
   }
 
   white(indent: Indent, msg: string): void {
-    for (const logger of this.loggers) {
+    this.loggers.forEach((logger) => {
       logger.white(indent, msg);
-    }
+    });
   }
+
   blue(indent: Indent, msg: string): void {
-    for (const logger of this.loggers) {
+    this.loggers.forEach((logger) => {
       logger.blue(indent, msg);
-    }
+    });
   }
+
   green(indent: Indent, msg: string): void {
-    for (const logger of this.loggers) {
+    this.loggers.forEach((logger) => {
       logger.green(indent, msg);
-    }
+    });
   }
+
   red(indent: Indent, msg: string): void {
-    for (const logger of this.loggers) {
+    this.loggers.forEach((logger) => {
       logger.red(indent, msg);
-    }
+    });
   }
+
   gray(indent: Indent, msg: string): void {
-    for (const logger of this.loggers) {
+    this.loggers.forEach((logger) => {
       logger.gray(indent, msg);
-    }
+    });
   }
 
   async finish() {
-    for (const logger of this.loggers) {
+    this.loggers.forEach((logger) => {
       logger.finish?.();
-    }
+    });
   }
 }

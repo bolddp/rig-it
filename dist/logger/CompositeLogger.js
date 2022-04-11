@@ -15,44 +15,44 @@ class CompositeLogger {
         this.loggers = loggers !== null && loggers !== void 0 ? loggers : [];
     }
     setup() {
-        var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            for (const logger of this.loggers) {
+            this.loggers.forEach((logger) => {
+                var _a;
                 (_a = logger.setup) === null || _a === void 0 ? void 0 : _a.call(logger);
-            }
+            });
         });
     }
     white(indent, msg) {
-        for (const logger of this.loggers) {
+        this.loggers.forEach((logger) => {
             logger.white(indent, msg);
-        }
+        });
     }
     blue(indent, msg) {
-        for (const logger of this.loggers) {
+        this.loggers.forEach((logger) => {
             logger.blue(indent, msg);
-        }
+        });
     }
     green(indent, msg) {
-        for (const logger of this.loggers) {
+        this.loggers.forEach((logger) => {
             logger.green(indent, msg);
-        }
+        });
     }
     red(indent, msg) {
-        for (const logger of this.loggers) {
+        this.loggers.forEach((logger) => {
             logger.red(indent, msg);
-        }
+        });
     }
     gray(indent, msg) {
-        for (const logger of this.loggers) {
+        this.loggers.forEach((logger) => {
             logger.gray(indent, msg);
-        }
+        });
     }
     finish() {
-        var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            for (const logger of this.loggers) {
+            this.loggers.forEach((logger) => {
+                var _a;
                 (_a = logger.finish) === null || _a === void 0 ? void 0 : _a.call(logger);
-            }
+            });
         });
     }
 }

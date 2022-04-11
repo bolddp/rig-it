@@ -16,13 +16,22 @@ class Test {
         this.config = config;
     }
     execute(request) {
-        var _a, _b, _c, _d, _e, _f, _g, _h;
+        var _a, _b, _c, _d, _e;
         return __awaiter(this, void 0, void 0, function* () {
             const ctx = {
                 rig: this.config.rig,
                 test: this,
+                removeFailureTeardown: (id) => {
+                    const count = this.config.rig.removeRigFailureTeardown(id);
+                },
+                removeSuccessTeardown: (id) => {
+                    const count = this.config.rig.removeRigSuccessTeardown(id);
+                },
             };
             this.config.logger.white(TestLogger_1.Indent.TestHeader, `Test: ${request.id}`);
+            if (request.assert && request.assertError) {
+                throw new Error(`Invalid setup for test ${request.id}: either assert() or assertError() can be set but not both`);
+            }
             yield ((_a = request.arrange) === null || _a === void 0 ? void 0 : _a.call(request, ctx));
             const ts = Date.now();
             const response = yield request.act(ctx);
@@ -30,34 +39,33 @@ class Test {
             if (response.isOk) {
                 if (!request.assertError) {
                     // Expected and got success
-                    (_b = this.config.logger) === null || _b === void 0 ? void 0 : _b.green(TestLogger_1.Indent.TestContent, 'Test succeeded');
                     // Adding teardown entry before the assertion to get proper teardown
                     this.addTeardownEntries({ request, testStepResponseContext });
                     try {
-                        yield ((_c = request.assert) === null || _c === void 0 ? void 0 : _c.call(request, testStepResponseContext));
+                        yield ((_b = request.assert) === null || _b === void 0 ? void 0 : _b.call(request, testStepResponseContext));
+                        (_c = this.config.logger) === null || _c === void 0 ? void 0 : _c.green(TestLogger_1.Indent.TestContent, 'Test succeeded');
                     }
                     catch (error) {
-                        (_d = this.config.logger) === null || _d === void 0 ? void 0 : _d.red(TestLogger_1.Indent.TestContent, `Assertion failed! ${error.message.replace(/[\r\n]/g, ', ')}`);
-                        throw new Error('Assertion failed');
+                        throw new Error(`Assertion failed! ${error.message.replace(/[\r\n]/g, ', ')}`);
                     }
                 }
                 else {
                     // Expected failure, got success
-                    (_e = this.config.logger) === null || _e === void 0 ? void 0 : _e.red(TestLogger_1.Indent.TestContent, 'Test succeeded when expected to fail');
+                    // this.config.logger?.red(Indent.TestContent, 'Test succeeded when expected to fail');
                     throw new Error('Unexpected success');
                 }
             }
             else {
                 if (!request.assertError) {
                     // Expected success, but the test failed
-                    (_f = this.config.logger) === null || _f === void 0 ? void 0 : _f.red(TestLogger_1.Indent.TestContent, 'Test failed');
+                    // this.config.logger?.red(Indent.TestContent, 'Test failed');
                     throw new Error('Unexpected failure');
                 }
                 else {
                     // Expected and got failure
-                    (_g = this.config.logger) === null || _g === void 0 ? void 0 : _g.green(TestLogger_1.Indent.TestContent, 'Test failed like expected');
+                    (_d = this.config.logger) === null || _d === void 0 ? void 0 : _d.green(TestLogger_1.Indent.TestContent, 'Test failed like expected');
                     this.addTeardownEntries({ request, testStepResponseContext });
-                    yield ((_h = request.assertError) === null || _h === void 0 ? void 0 : _h.call(request, testStepResponseContext));
+                    yield ((_e = request.assertError) === null || _e === void 0 ? void 0 : _e.call(request, testStepResponseContext));
                 }
             }
         });
