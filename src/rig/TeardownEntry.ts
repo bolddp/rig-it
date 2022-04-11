@@ -1,7 +1,7 @@
-import { TestRequest } from '../test/TestRequest';
+import { TestSetup } from '../test/TestSetup';
 import { TestStepResponseContext } from '../test/TestStepContext';
 
 export interface TeardownEntry {
-  request: TestRequest;
+  request: TestSetup;
   testStepResponseContext: TestStepResponseContext;
 }

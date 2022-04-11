@@ -7,5 +7,5 @@ export * from './reporter/TestReporter';
 export * from './rig/TestRig';
 export * from './rig/TestRigRunContext';
 export * from './test/Test';
-export * from './test/TestRequest';
+export * from './test/TestSetup';
 export * from './test/TestStepContext';

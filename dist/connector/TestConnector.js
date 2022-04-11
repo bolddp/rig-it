@@ -119,6 +119,22 @@ class TestConnector {
             }
         });
     }
+    /**
+     * Sets a request header on this connector, e.g. for authentication. The header will be present in
+     * all requests that are performed by the connector until the header is cleared.
+     *
+     * @example setHeader('Authorization', 'Bearer xxx');
+     * The header is cleared by setting value = undefined.
+     */
+    setHeader(name, value) {
+        var _a;
+        if (value == undefined) {
+            (_a = this.axiosConfig.headers) === null || _a === void 0 ? true : delete _a[name];
+        }
+        else {
+            this.axiosConfig.headers = Object.assign(Object.assign({}, this.axiosConfig.headers), { [name]: value });
+        }
+    }
     get(request) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.request(Object.assign(Object.assign({}, request), { method: 'GET' }));

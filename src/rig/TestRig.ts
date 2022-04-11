@@ -2,11 +2,11 @@ import { TestConnector, TestConnectorConfig } from '../connector/TestConnector';
 import { ConsoleLogger } from '../logger/ConsoleLogger';
 import { Indent, TestLogger } from '../logger/TestLogger';
 import { TestReporter } from '../reporter/TestReporter';
-import { TestRigRunContext } from './TestRigRunContext';
-import { TestRequest } from '../test/TestRequest';
+import { TestSetup } from '../test/TestSetup';
 import { Test } from '../test/Test';
 import { TeardownEntry } from './TeardownEntry';
 import { CompositeLogger } from '../logger/CompositeLogger';
+import { TestRigRunContext } from './TestRigRunContext';
 
 /**
  * The test rig keeps track of the execution of an integration test: running tests, keeping
@@ -30,7 +30,7 @@ export class TestRig {
     return new CompositeLogger(loggers!);
   }
 
-  async run(fnc: (ctx: TestRigRunContext) => Promise<any>) {
+  async run(fnc: TestRigRunFunction) {
     await this.logger.setup?.();
     this.logger.blue(
       Indent.TestRig,
@@ -40,19 +40,20 @@ export class TestRig {
       await fnc({
         rig: this,
         reporter: this.config?.reporter,
+        metadata: this.config?.metadata,
         createConnector: (config: TestConnectorConfig): TestConnector => {
           return new TestConnector(this, {
             ...config,
             logger: this.logger,
           });
         },
-        test: async (request: TestRequest): Promise<any> => {
+        test: async (request: TestSetup): Promise<any> => {
           try {
             const test = new Test({
               rig: this,
               logger: this.logger,
             });
-            await test.execute(request);
+            return test.execute(request);
           } catch (error: any) {
             this.logger.red(Indent.TestContent, error.message);
             throw error;
@@ -79,16 +80,20 @@ export class TestRig {
     this.rigSuccessTeardownEntries.unshift(entry);
   }
 
-  removeRigFailureTeardown(id: string): void {
+  removeRigFailureTeardown(id: string): number {
+    const count = this.rigFailureTeardownEntries.length;
     this.rigFailureTeardownEntries = this.rigFailureTeardownEntries.filter(
       (t) => t.request.id != id
     );
+    return count - this.rigFailureTeardownEntries.length;
   }
 
-  removeRigSuccessTeardown(id: string): void {
+  removeRigSuccessTeardown(id: string): number {
+    const count = this.rigSuccessTeardownEntries.length;
     this.rigSuccessTeardownEntries = this.rigSuccessTeardownEntries.filter(
       (t) => t.request.id != id
     );
+    return count - this.rigSuccessTeardownEntries.length;
   }
 
   async performSuccessTeardown(): Promise<void> {
@@ -124,8 +129,13 @@ export class TestRig {
   }
 }
 
+export type TestRigRunFunction = (ctx: TestRigRunContext) => Promise<any>;
+
+export type TestRigMetadata = { [key: string]: any };
+
 export interface TestRigConfig {
   loggers?: TestLogger[];
   name?: string;
   reporter?: TestReporter;
+  metadata?: TestRigMetadata;
 }

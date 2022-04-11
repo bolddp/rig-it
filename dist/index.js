@@ -23,5 +23,5 @@ __exportStar(require("./reporter/TestReporter"), exports);
 __exportStar(require("./rig/TestRig"), exports);
 __exportStar(require("./rig/TestRigRunContext"), exports);
 __exportStar(require("./test/Test"), exports);
-__exportStar(require("./test/TestRequest"), exports);
+__exportStar(require("./test/TestSetup"), exports);
 __exportStar(require("./test/TestStepContext"), exports);

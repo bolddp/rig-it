@@ -20,6 +20,14 @@ export declare class TestConnector {
     private constructBody;
     private constructCompositeAxiosConfig;
     request(request: TestConnectorMethodRequest): Promise<TestResponse>;
+    /**
+     * Sets a request header on this connector, e.g. for authentication. The header will be present in
+     * all requests that are performed by the connector until the header is cleared.
+     *
+     * @example setHeader('Authorization', 'Bearer xxx');
+     * The header is cleared by setting value = undefined.
+     */
+    setHeader(name: string, value: string | undefined): void;
     get(request: TestConnectorRequest): Promise<TestResponse>;
     put(request: TestConnectorRequest): Promise<TestResponse>;
     patch(request: TestConnectorRequest): Promise<TestResponse>;

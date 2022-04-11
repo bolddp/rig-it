@@ -1,8 +1,14 @@
 import { TestResponse } from '../connector/TestResponse';
 import { TestStepContext, TestStepResponseContext } from './TestStepContext';
 
-export interface TestRequest {
+/**
+ * Describes the setup of a test.
+ */
+export interface TestSetup {
   id: string;
+  /**
+   * Add code here to perform preparations for test, if necessary.
+   */
   arrange?: (ctx: TestStepContext) => Promise<void>;
   /**
    * Add code to perform the test here. The act() function must return a {@link TestResponse} that

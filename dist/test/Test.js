@@ -23,9 +23,11 @@ class Test {
                 test: this,
                 removeFailureTeardown: (id) => {
                     const count = this.config.rig.removeRigFailureTeardown(id);
+                    this.config.logger.gray(TestLogger_1.Indent.TestContent, `Removed ${count} failure teardown for test ${id}`);
                 },
                 removeSuccessTeardown: (id) => {
                     const count = this.config.rig.removeRigSuccessTeardown(id);
+                    this.config.logger.gray(TestLogger_1.Indent.TestContent, `Removed ${count} success teardown for test ${id}`);
                 },
             };
             this.config.logger.white(TestLogger_1.Indent.TestHeader, `Test: ${request.id}`);
@@ -68,6 +70,7 @@ class Test {
                     yield ((_e = request.assertError) === null || _e === void 0 ? void 0 : _e.call(request, testStepResponseContext));
                 }
             }
+            return response.data;
         });
     }
     addTeardownEntries(entry) {

@@ -1,7 +1,7 @@
 import { Indent, TestLogger } from '../logger/TestLogger';
 import { TeardownEntry } from '../rig/TeardownEntry';
 import { TestRig } from '../rig/TestRig';
-import { TestRequest } from './TestRequest';
+import { TestSetup } from './TestSetup';
 import { TestStepContext, TestStepResponseContext } from './TestStepContext';
 
 export class Test {
@@ -11,15 +11,23 @@ export class Test {
     this.config = config;
   }
 
-  async execute(request: TestRequest): Promise<void> {
+  async execute(request: TestSetup): Promise<any> {
     const ctx: TestStepContext = {
       rig: this.config.rig,
       test: this,
       removeFailureTeardown: (id) => {
         const count = this.config.rig.removeRigFailureTeardown(id);
+        this.config.logger.gray(
+          Indent.TestContent,
+          `Removed ${count} failure teardown for test ${id}`
+        );
       },
       removeSuccessTeardown: (id) => {
         const count = this.config.rig.removeRigSuccessTeardown(id);
+        this.config.logger.gray(
+          Indent.TestContent,
+          `Removed ${count} success teardown for test ${id}`
+        );
       },
     };
     this.config.logger.white(Indent.TestHeader, `Test: ${request.id}`);
@@ -68,6 +76,7 @@ export class Test {
         await request.assertError?.(testStepResponseContext);
       }
     }
+    return response.data;
   }
 
   private addTeardownEntries(entry: TeardownEntry) {

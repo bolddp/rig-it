@@ -33,7 +33,7 @@ class TestRig {
         return new CompositeLogger_1.CompositeLogger(loggers);
     }
     run(fnc) {
-        var _a, _b, _c, _d, _e, _f, _g, _h;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j;
         return __awaiter(this, void 0, void 0, function* () {
             yield ((_b = (_a = this.logger).setup) === null || _b === void 0 ? void 0 : _b.call(_a));
             this.logger.blue(TestLogger_1.Indent.TestRig, ((_c = this.config) === null || _c === void 0 ? void 0 : _c.name) ? `Starting: ${this.config.name}` : 'Starting');
@@ -41,6 +41,7 @@ class TestRig {
                 yield fnc({
                     rig: this,
                     reporter: (_d = this.config) === null || _d === void 0 ? void 0 : _d.reporter,
+                    metadata: (_e = this.config) === null || _e === void 0 ? void 0 : _e.metadata,
                     createConnector: (config) => {
                         return new TestConnector_1.TestConnector(this, Object.assign(Object.assign({}, config), { logger: this.logger }));
                     },
@@ -50,7 +51,7 @@ class TestRig {
                                 rig: this,
                                 logger: this.logger,
                             });
-                            yield test.execute(request);
+                            return test.execute(request);
                         }
                         catch (error) {
                             this.logger.red(TestLogger_1.Indent.TestContent, error.message);
@@ -58,14 +59,14 @@ class TestRig {
                         }
                     }),
                 });
-                this.logger.blue(TestLogger_1.Indent.TestRig, ((_e = this.config) === null || _e === void 0 ? void 0 : _e.name) ? `Finished: ${this.config.name}` : 'Finished');
+                this.logger.blue(TestLogger_1.Indent.TestRig, ((_f = this.config) === null || _f === void 0 ? void 0 : _f.name) ? `Finished: ${this.config.name}` : 'Finished');
                 yield this.performSuccessTeardown();
             }
             catch (error) {
-                this.logger.red(TestLogger_1.Indent.TestRig, ((_f = this.config) === null || _f === void 0 ? void 0 : _f.name) ? `Failed: ${this.config.name}` : 'Failed');
+                this.logger.red(TestLogger_1.Indent.TestRig, ((_g = this.config) === null || _g === void 0 ? void 0 : _g.name) ? `Failed: ${this.config.name}` : 'Failed');
                 yield this.performFailureTeardown();
             }
-            yield ((_h = (_g = this.logger).finish) === null || _h === void 0 ? void 0 : _h.call(_g));
+            yield ((_j = (_h = this.logger).finish) === null || _j === void 0 ? void 0 : _j.call(_h));
         });
     }
     addRigFailureTeardown(entry) {
@@ -75,10 +76,14 @@ class TestRig {
         this.rigSuccessTeardownEntries.unshift(entry);
     }
     removeRigFailureTeardown(id) {
+        const count = this.rigFailureTeardownEntries.length;
         this.rigFailureTeardownEntries = this.rigFailureTeardownEntries.filter((t) => t.request.id != id);
+        return count - this.rigFailureTeardownEntries.length;
     }
     removeRigSuccessTeardown(id) {
+        const count = this.rigSuccessTeardownEntries.length;
         this.rigSuccessTeardownEntries = this.rigSuccessTeardownEntries.filter((t) => t.request.id != id);
+        return count - this.rigSuccessTeardownEntries.length;
     }
     performSuccessTeardown() {
         var _a, _b;
