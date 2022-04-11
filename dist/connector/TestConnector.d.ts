@@ -1,15 +1,14 @@
 import { AxiosRequestHeaders, Method } from 'axios';
 import { TestResponse } from './TestResponse';
-import { TestRig } from '../rig/TestRig';
 import { TestLogger } from '../logger/TestLogger';
 export declare class TestConnector {
-    private rig;
+    private logger;
     private config;
     private axiosConfig;
     private bearerToken?;
     private basicAuth?;
     private xApiKey?;
-    constructor(rig: TestRig, config: TestConnectorConfig);
+    constructor(config: TestConnectorConfig, logger: TestLogger);
     /**
      * Filters out request values whose value is undefined and prevents them from being added to
      * the query parameters of the URL. E.g. { a: "defined", b: undefined } becomes { a: "defined" }
@@ -39,7 +38,7 @@ export declare type RequestParams = {
 };
 export interface TestConnectorConfig {
     baseUrl: string;
-    logger?: TestLogger;
+    authHeaders?: AxiosRequestHeaders;
     timeoutMs?: number;
 }
 export interface TestConnectorRequest {

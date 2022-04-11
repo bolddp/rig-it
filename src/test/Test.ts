@@ -80,10 +80,10 @@ export class Test {
   }
 
   private addTeardownEntries(entry: TeardownEntry) {
-    if (entry.request.onRigSuccessTeardown) {
+    if (entry.request.rigSuccessTeardown) {
       this.config.rig.addRigSuccessTeardown(entry);
     }
-    if (entry.request.onRigFailureTeardown) {
+    if (entry.request.rigFailureTeardown) {
       this.config.rig.addRigFailureTeardown(entry);
     }
   }

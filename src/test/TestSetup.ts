@@ -43,10 +43,10 @@ export interface TestSetup {
    * reverse order of how they were declared, e.g. the onRigFailure code of an early test will be
    * executed after the onRigFailure code of a later test.
    */
-  onRigFailureTeardown?: (ctx: TestStepResponseContext) => Promise<void>;
+  rigFailureTeardown?: (ctx: TestStepResponseContext) => Promise<void>;
   /**
    * Add test cleanup code here, e.g. deletion of a resource that the test creates, that should be run
    * only if the test rig succeeds.
    */
-  onRigSuccessTeardown?: (ctx: TestStepResponseContext) => Promise<void>;
+  rigSuccessTeardown?: (ctx: TestStepResponseContext) => Promise<void>;
 }

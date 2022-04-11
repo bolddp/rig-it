@@ -17,17 +17,14 @@ const axios_1 = __importDefault(require("axios"));
 const TestLogger_1 = require("../logger/TestLogger");
 const DEFAULT_REQUEST_TIMEOUT = 5000;
 class TestConnector {
-    constructor(rig, config) {
+    constructor(config, logger) {
         var _a;
-        this.rig = rig;
         this.config = config;
+        this.logger = logger;
         this.axiosConfig = {
             baseURL: this.config.baseUrl,
             timeout: (_a = this.config.timeoutMs) !== null && _a !== void 0 ? _a : DEFAULT_REQUEST_TIMEOUT,
-            headers: {
-                Accept: '*/*',
-                'Content-Type': 'application/json',
-            },
+            headers: Object.assign(Object.assign({}, config.authHeaders), { Accept: '*/*', 'Content-Type': 'application/json' }),
         };
     }
     /**
@@ -86,14 +83,14 @@ class TestConnector {
         return result;
     }
     request(request) {
-        var _a, _b, _c, _d, _e, _f;
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             const config = this.constructCompositeAxiosConfig(request);
             const ts = Date.now();
-            (_a = this.config.logger) === null || _a === void 0 ? void 0 : _a.gray(TestLogger_1.Indent.TestContent, `${config.method} ${config.baseURL}${axios_1.default.getUri(config)}`);
+            this.logger.gray(TestLogger_1.Indent.TestContent, `${config.method} ${config.baseURL}${axios_1.default.getUri(config)}`);
             try {
                 const response = yield axios_1.default.request(config);
-                (_b = this.config.logger) === null || _b === void 0 ? void 0 : _b.green(TestLogger_1.Indent.TestContent, `HTTP ${response.status} - ${JSON.stringify((_c = response.data) !== null && _c !== void 0 ? _c : '').length} bytes in ${Date.now() - ts} ms`);
+                this.logger.green(TestLogger_1.Indent.TestContent, `HTTP ${response.status} - ${JSON.stringify((_a = response.data) !== null && _a !== void 0 ? _a : '').length} bytes in ${Date.now() - ts} ms`);
                 return {
                     isOk: true,
                     status: response.status,
@@ -104,10 +101,10 @@ class TestConnector {
             catch (error) {
                 if (!error.response) {
                     // No response at all was received, e.g. timeout or invalid URL
-                    (_d = this.config.logger) === null || _d === void 0 ? void 0 : _d.red(TestLogger_1.Indent.TestContent, `${config.method} failed in ${Date.now() - ts} ms : ${error.message}`);
+                    this.logger.red(TestLogger_1.Indent.TestContent, `${config.method} failed in ${Date.now() - ts} ms : ${error.message}`);
                     throw error;
                 }
-                (_e = this.config.logger) === null || _e === void 0 ? void 0 : _e.red(TestLogger_1.Indent.TestContent, `HTTP ${error.response.status} - ${JSON.stringify((_f = error.response.data) !== null && _f !== void 0 ? _f : '').length} bytes in ${Date.now() - ts} ms`);
+                this.logger.red(TestLogger_1.Indent.TestContent, `HTTP ${error.response.status} - ${JSON.stringify((_b = error.response.data) !== null && _b !== void 0 ? _b : '').length} bytes in ${Date.now() - ts} ms`);
                 const rsp = {
                     isOk: false,
                     status: error.response.status,

@@ -6,20 +6,21 @@ import { Indent, TestLogger } from '../logger/TestLogger';
 const DEFAULT_REQUEST_TIMEOUT = 5000;
 
 export class TestConnector {
-  private rig: TestRig;
+  private logger: TestLogger;
   private config: TestConnectorConfig;
   private axiosConfig: AxiosRequestConfig;
   private bearerToken?: string;
   private basicAuth?: string;
   private xApiKey?: string;
 
-  constructor(rig: TestRig, config: TestConnectorConfig) {
-    this.rig = rig;
+  constructor(config: TestConnectorConfig, logger: TestLogger) {
     this.config = config;
+    this.logger = logger;
     this.axiosConfig = {
       baseURL: this.config.baseUrl,
       timeout: this.config.timeoutMs ?? DEFAULT_REQUEST_TIMEOUT,
       headers: {
+        ...config.authHeaders,
         Accept: '*/*',
         'Content-Type': 'application/json',
       },
@@ -98,13 +99,13 @@ export class TestConnector {
   async request(request: TestConnectorMethodRequest): Promise<TestResponse> {
     const config = this.constructCompositeAxiosConfig(request);
     const ts = Date.now();
-    this.config.logger?.gray(
+    this.logger.gray(
       Indent.TestContent,
       `${config.method} ${config.baseURL}${axios.getUri(config)}`
     );
     try {
       const response = await axios.request(config);
-      this.config.logger?.green(
+      this.logger.green(
         Indent.TestContent,
         `HTTP ${response.status} - ${JSON.stringify(response.data ?? '').length} bytes in ${
           Date.now() - ts
@@ -119,13 +120,13 @@ export class TestConnector {
     } catch (error: any) {
       if (!error.response) {
         // No response at all was received, e.g. timeout or invalid URL
-        this.config.logger?.red(
+        this.logger.red(
           Indent.TestContent,
           `${config.method} failed in ${Date.now() - ts} ms : ${error.message}`
         );
         throw error;
       }
-      this.config.logger?.red(
+      this.logger.red(
         Indent.TestContent,
         `HTTP ${error.response.status} - ${
           JSON.stringify(error.response.data ?? '').length
@@ -185,7 +186,7 @@ export type RequestParams = { [key: string]: any };
 
 export interface TestConnectorConfig {
   baseUrl: string;
-  logger?: TestLogger;
+  authHeaders?: AxiosRequestHeaders;
   timeoutMs?: number;
 }
 

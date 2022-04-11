@@ -8,6 +8,14 @@ import { TeardownEntry } from './TeardownEntry';
 import { CompositeLogger } from '../logger/CompositeLogger';
 import { TestRigRunContext } from './TestRigRunContext';
 
+export type TestRigRunFunction = (ctx: TestRigRunContext) => Promise<any>;
+
+export interface TestRigConfig {
+  loggers?: TestLogger[];
+  name?: string;
+  reporter?: TestReporter;
+}
+
 /**
  * The test rig keeps track of the execution of an integration test: running tests, keeping
  * track of any teardown necessary and producing test results.
@@ -40,12 +48,8 @@ export class TestRig {
       await fnc({
         rig: this,
         reporter: this.config?.reporter,
-        metadata: this.config?.metadata,
         createConnector: (config: TestConnectorConfig): TestConnector => {
-          return new TestConnector(this, {
-            ...config,
-            logger: this.logger,
-          });
+          return new TestConnector(config, this.logger);
         },
         test: async (request: TestSetup): Promise<any> => {
           try {
@@ -104,7 +108,7 @@ export class TestRig {
     for (const entry of this.rigSuccessTeardownEntries) {
       this.logger.white(Indent.TestHeader, `Tearing down on success: ${entry.request.id}`);
       try {
-        await entry.request.onRigSuccessTeardown?.(entry.testStepResponseContext);
+        await entry.request.rigSuccessTeardown?.(entry.testStepResponseContext);
       } catch (error: any) {
         // Only log, all teardown steps should be attempted
       }
@@ -120,22 +124,11 @@ export class TestRig {
     for (const entry of this.rigFailureTeardownEntries) {
       this.logger.white(Indent.TestHeader, `Tearing down on failure: ${entry.request.id}`);
       try {
-        await entry.request.onRigFailureTeardown?.(entry.testStepResponseContext);
+        await entry.request.rigFailureTeardown?.(entry.testStepResponseContext);
       } catch (error: any) {
         // Only log, all teardown steps should be attempted
       }
     }
     this.logger.blue(Indent.TestRig, 'Teardown after test failure completed');
   }
-}
-
-export type TestRigRunFunction = (ctx: TestRigRunContext) => Promise<any>;
-
-export type TestRigMetadata = { [key: string]: any };
-
-export interface TestRigConfig {
-  loggers?: TestLogger[];
-  name?: string;
-  reporter?: TestReporter;
-  metadata?: TestRigMetadata;
 }
