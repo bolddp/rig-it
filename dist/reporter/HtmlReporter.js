@@ -9,14 +9,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.HtmlLogger = void 0;
+exports.HtmlReporter = void 0;
 const whiteColor = '#ffffff';
 const blueColor = '#1e90ff';
 const greenColor = '#00ff00';
 const redColor = '#ff0000';
 const grayColor = '#999999';
 const indentSize = 4;
-class HtmlLogger {
+class HtmlReporter {
     constructor(callback) {
         this.lines = [];
         this.callback = callback;
@@ -49,4 +49,4 @@ class HtmlLogger {
         });
     }
 }
-exports.HtmlLogger = HtmlLogger;
+exports.HtmlReporter = HtmlReporter;

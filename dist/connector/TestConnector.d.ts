@@ -1,6 +1,6 @@
 import { AxiosRequestHeaders, Method } from 'axios';
 import { TestResponse } from './TestResponse';
-import { TestLogger } from '../logger/TestLogger';
+import { TestReporter } from '../reporter/TestReporter';
 export declare class TestConnector {
     private logger;
     private config;
@@ -8,7 +8,7 @@ export declare class TestConnector {
     private bearerToken?;
     private basicAuth?;
     private xApiKey?;
-    constructor(config: TestConnectorConfig, logger: TestLogger);
+    constructor(config: TestConnectorConfig, logger: TestReporter);
     /**
      * Filters out request values whose value is undefined and prevents them from being added to
      * the query parameters of the URL. E.g. { a: "defined", b: undefined } becomes { a: "defined" }

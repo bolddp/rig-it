@@ -3,9 +3,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ConsoleLogger = void 0;
+exports.ConsoleReporter = void 0;
 const chalk_1 = __importDefault(require("chalk"));
-class ConsoleLogger {
+class ConsoleReporter {
     getIndent(indent) {
         return ' '.repeat(indent * 2);
     }
@@ -28,4 +28,4 @@ class ConsoleLogger {
         this.log(indent, chalk_1.default.gray(msg));
     }
 }
-exports.ConsoleLogger = ConsoleLogger;
+exports.ConsoleReporter = ConsoleReporter;

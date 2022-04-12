@@ -9,59 +9,59 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CompositeLogger = void 0;
-class CompositeLogger {
-    constructor(loggers) {
-        this.loggers = loggers !== null && loggers !== void 0 ? loggers : [];
+exports.CompositeReporter = void 0;
+class CompositeReporter {
+    constructor(reporters) {
+        this.reporters = reporters !== null && reporters !== void 0 ? reporters : [];
     }
     setup() {
         return __awaiter(this, void 0, void 0, function* () {
-            this.loggers.forEach((logger) => {
+            this.reporters.forEach((logger) => {
                 var _a;
                 (_a = logger.setup) === null || _a === void 0 ? void 0 : _a.call(logger);
             });
         });
     }
     printWhite(indent, msg) {
-        this.loggers.forEach((logger) => {
+        this.reporters.forEach((logger) => {
             logger.printWhite(indent, msg);
         });
     }
     printBlue(indent, msg) {
-        this.loggers.forEach((logger) => {
+        this.reporters.forEach((logger) => {
             logger.printBlue(indent, msg);
         });
     }
     printGreen(indent, msg) {
-        this.loggers.forEach((logger) => {
+        this.reporters.forEach((logger) => {
             logger.printGreen(indent, msg);
         });
     }
     printRed(indent, msg) {
-        this.loggers.forEach((logger) => {
+        this.reporters.forEach((logger) => {
             logger.printRed(indent, msg);
         });
     }
     printGray(indent, msg) {
-        this.loggers.forEach((logger) => {
+        this.reporters.forEach((logger) => {
             logger.printGray(indent, msg);
         });
     }
-    reportTestResponse(params) {
+    reportTestResponse(testId, response) {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            for (const logger of this.loggers) {
-                yield ((_a = logger.reportTestResponse) === null || _a === void 0 ? void 0 : _a.call(logger, params));
+            for (const logger of this.reporters) {
+                yield ((_a = logger.reportTestResponse) === null || _a === void 0 ? void 0 : _a.call(logger, testId, response));
             }
         });
     }
-    finish() {
+    finish(isSuccess) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.loggers.forEach((logger) => {
+            this.reporters.forEach((logger) => {
                 var _a;
-                (_a = logger.finish) === null || _a === void 0 ? void 0 : _a.call(logger);
+                (_a = logger.finish) === null || _a === void 0 ? void 0 : _a.call(logger, isSuccess);
             });
         });
     }
 }
-exports.CompositeLogger = CompositeLogger;
+exports.CompositeReporter = CompositeReporter;

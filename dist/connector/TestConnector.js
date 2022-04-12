@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TestConnector = void 0;
 const axios_1 = __importDefault(require("axios"));
-const TestLogger_1 = require("../logger/TestLogger");
+const TestReporter_1 = require("../reporter/TestReporter");
 const DEFAULT_REQUEST_TIMEOUT = 5000;
 class TestConnector {
     constructor(config, logger) {
@@ -87,10 +87,10 @@ class TestConnector {
         return __awaiter(this, void 0, void 0, function* () {
             const config = this.constructCompositeAxiosConfig(request);
             const ts = Date.now();
-            this.logger.printGray(TestLogger_1.Indent.TestContent, `${config.method} ${config.baseURL}${axios_1.default.getUri(config)}`);
+            this.logger.printGray(TestReporter_1.Indent.TestContent, `${config.method} ${config.baseURL}${axios_1.default.getUri(config)}`);
             try {
                 const response = yield axios_1.default.request(config);
-                this.logger.printGreen(TestLogger_1.Indent.TestContent, `HTTP ${response.status} - ${JSON.stringify((_a = response.data) !== null && _a !== void 0 ? _a : '').length} bytes in ${Date.now() - ts} ms`);
+                this.logger.printGreen(TestReporter_1.Indent.TestContent, `HTTP ${response.status} - ${JSON.stringify((_a = response.data) !== null && _a !== void 0 ? _a : '').length} bytes in ${Date.now() - ts} ms`);
                 return {
                     isOk: true,
                     status: response.status,
@@ -101,10 +101,10 @@ class TestConnector {
             catch (error) {
                 if (!error.response) {
                     // No response at all was received, e.g. timeout or invalid URL
-                    this.logger.printRed(TestLogger_1.Indent.TestContent, `${config.method} failed in ${Date.now() - ts} ms : ${error.message}`);
+                    this.logger.printRed(TestReporter_1.Indent.TestContent, `${config.method} failed in ${Date.now() - ts} ms : ${error.message}`);
                     throw error;
                 }
-                this.logger.printRed(TestLogger_1.Indent.TestContent, `HTTP ${error.response.status} - ${JSON.stringify((_b = error.response.data) !== null && _b !== void 0 ? _b : '').length} bytes in ${Date.now() - ts} ms`);
+                this.logger.printRed(TestReporter_1.Indent.TestContent, `HTTP ${error.response.status} - ${JSON.stringify((_b = error.response.data) !== null && _b !== void 0 ? _b : '').length} bytes in ${Date.now() - ts} ms`);
                 const rsp = {
                     isOk: false,
                     status: error.response.status,

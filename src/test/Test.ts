@@ -1,8 +1,12 @@
-import { Indent, TestLogger } from '../logger/TestLogger';
-import { TeardownEntry } from '../rig/TeardownEntry';
-import { TestRig } from '../rig/TestRig';
+import { Indent, TestReporter } from '../reporter/TestReporter';
+import { TeardownEntry, TestRig } from '../rig/TestRig';
 import { TestSetup } from './TestSetup';
 import { TestStepContext, TestStepResponseContext } from './TestStepContext';
+
+export interface TestConfig {
+  rig: TestRig;
+  reporter: TestReporter;
+}
 
 export class Test {
   private config: TestConfig;
@@ -17,20 +21,20 @@ export class Test {
       test: this,
       removeFailureTeardown: (id) => {
         const count = this.config.rig.removeRigFailureTeardown(id);
-        this.config.logger.printGray(
+        this.config.reporter.printGray(
           Indent.TestContent,
           `Removed ${count} failure teardown for test ${id}`
         );
       },
       removeSuccessTeardown: (id) => {
         const count = this.config.rig.removeRigSuccessTeardown(id);
-        this.config.logger.printGray(
+        this.config.reporter.printGray(
           Indent.TestContent,
           `Removed ${count} success teardown for test ${id}`
         );
       },
     };
-    this.config.logger.printWhite(Indent.TestHeader, `Test: ${request.id}`);
+    this.config.reporter.printWhite(Indent.TestHeader, `Test: ${request.id}`);
 
     if (request.assert && request.assertError) {
       throw new Error(
@@ -42,11 +46,7 @@ export class Test {
 
     const response = await request.act(ctx);
 
-    this.config.logger.reportTestResponse?.({
-      testRigName: this.config.rig.getConfig()?.name,
-      testId: request.id,
-      response,
-    });
+    this.config.reporter.reportTestResponse?.(request.id, response);
 
     const testStepResponseContext: TestStepResponseContext = {
       ...ctx,
@@ -61,7 +61,7 @@ export class Test {
 
         try {
           await request.assert?.(testStepResponseContext);
-          this.config.logger?.printGreen(Indent.TestContent, 'Test succeeded');
+          this.config.reporter?.printGreen(Indent.TestContent, 'Test succeeded');
         } catch (error: any) {
           throw new Error(`Assertion failed! ${error.message.replace(/[\r\n]/g, ', ')}`);
         }
@@ -77,7 +77,7 @@ export class Test {
         throw new Error('Unexpected failure');
       } else {
         // Expected and got failure
-        this.config.logger?.printGreen(Indent.TestContent, 'Test failed, which was expected');
+        this.config.reporter?.printGreen(Indent.TestContent, 'Test failed, which was expected');
         this.addTeardownEntries({ request, testStepResponseContext });
         await request.assertError?.(testStepResponseContext);
       }
@@ -93,9 +93,4 @@ export class Test {
       this.config.rig.addRigFailureTeardown(entry);
     }
   }
-}
-
-export interface TestConfig {
-  rig: TestRig;
-  logger: TestLogger;
 }

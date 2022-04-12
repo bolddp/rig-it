@@ -1,9 +1,9 @@
-import { Indent, TestLogger } from './TestLogger';
-export declare type HtmlLoggerCallback = (html: string) => Promise<void>;
-export declare class HtmlLogger implements TestLogger {
+import { Indent, TestReporter } from './TestReporter';
+export declare type HtmlReporterCallback = (html: string) => Promise<void>;
+export declare class HtmlReporter implements TestReporter {
     private lines;
     private callback;
-    constructor(callback: HtmlLoggerCallback);
+    constructor(callback: HtmlReporterCallback);
     private htmlLog;
     printWhite(indent: Indent, msg: string): void;
     printBlue(indent: Indent, msg: string): void;

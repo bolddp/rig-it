@@ -1,12 +1,15 @@
-import { TestLogger } from '../logger/TestLogger';
 import { TestReporter } from '../reporter/TestReporter';
-import { TeardownEntry } from './TeardownEntry';
+import { TestSetup } from '../test/TestSetup';
 import { TestRigRunContext } from './TestRigRunContext';
+import { TestStepResponseContext } from '../test/TestStepContext';
 export declare type TestRigRunFunction = (ctx: TestRigRunContext) => Promise<any>;
 export interface TestRigConfig {
-    loggers?: TestLogger[];
+    reporters?: TestReporter[];
     name?: string;
-    reporter?: TestReporter;
+}
+export interface TeardownEntry {
+    request: TestSetup;
+    testStepResponseContext: TestStepResponseContext;
 }
 /**
  * The test rig keeps track of the execution of an integration test: running tests, keeping
@@ -14,11 +17,11 @@ export interface TestRigConfig {
  */
 export declare class TestRig {
     private config?;
-    private logger;
+    private reporter;
     private rigFailureTeardownEntries;
     private rigSuccessTeardownEntries;
     constructor(config?: TestRigConfig);
-    private createCompositeLogger;
+    private createCompositeReporter;
     getConfig(): TestRigConfig | undefined;
     run(fnc: TestRigRunFunction): Promise<void>;
     addRigFailureTeardown(entry: TeardownEntry): void;

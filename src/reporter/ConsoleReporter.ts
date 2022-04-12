@@ -1,7 +1,7 @@
 import chalk from 'chalk';
-import { Indent, TestLogger } from './TestLogger';
+import { Indent, TestReporter } from './TestReporter';
 
-export class ConsoleLogger implements TestLogger {
+export class ConsoleReporter implements TestReporter {
   private getIndent(indent: Indent): string {
     return ' '.repeat(indent * 2);
   }

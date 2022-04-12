@@ -1,7 +1,7 @@
 import chalk from 'chalk';
-import { Indent, TestLogger } from './TestLogger';
+import { Indent, TestReporter } from './TestReporter';
 
-export type HtmlLoggerCallback = (html: string) => Promise<void>;
+export type HtmlReporterCallback = (html: string) => Promise<void>;
 
 const whiteColor = '#ffffff';
 const blueColor = '#1e90ff';
@@ -11,11 +11,11 @@ const grayColor = '#999999';
 
 const indentSize = 4;
 
-export class HtmlLogger implements TestLogger {
+export class HtmlReporter implements TestReporter {
   private lines: string[] = [];
-  private callback: HtmlLoggerCallback;
+  private callback: HtmlReporterCallback;
 
-  constructor(callback: HtmlLoggerCallback) {
+  constructor(callback: HtmlReporterCallback) {
     this.callback = callback;
   }
 

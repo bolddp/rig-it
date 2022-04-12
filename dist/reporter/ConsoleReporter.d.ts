@@ -1,5 +1,5 @@
-import { Indent, TestLogger } from './TestLogger';
-export declare class ConsoleLogger implements TestLogger {
+import { Indent, TestReporter } from './TestReporter';
+export declare class ConsoleReporter implements TestReporter {
     private getIndent;
     private log;
     printWhite(indent: Indent, msg: string): void;

@@ -1,19 +1,19 @@
 import axios, { AxiosRequestConfig, AxiosRequestHeaders, Method } from 'axios';
 import { TestResponse } from './TestResponse';
 import { TestRig } from '../rig/TestRig';
-import { Indent, TestLogger } from '../logger/TestLogger';
+import { Indent, TestReporter } from '../reporter/TestReporter';
 
 const DEFAULT_REQUEST_TIMEOUT = 5000;
 
 export class TestConnector {
-  private logger: TestLogger;
+  private logger: TestReporter;
   private config: TestConnectorConfig;
   private axiosConfig: AxiosRequestConfig;
   private bearerToken?: string;
   private basicAuth?: string;
   private xApiKey?: string;
 
-  constructor(config: TestConnectorConfig, logger: TestLogger) {
+  constructor(config: TestConnectorConfig, logger: TestReporter) {
     this.config = config;
     this.logger = logger;
     this.axiosConfig = {
