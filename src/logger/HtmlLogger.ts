@@ -28,23 +28,23 @@ export class HtmlLogger implements TestLogger {
     );
   }
 
-  white(indent: Indent, msg: string): void {
+  printWhite(indent: Indent, msg: string): void {
     this.htmlLog(indent, whiteColor, msg);
   }
 
-  blue(indent: Indent, msg: string): void {
+  printBlue(indent: Indent, msg: string): void {
     this.htmlLog(indent, blueColor, msg);
   }
 
-  green(indent: Indent, msg: string): void {
+  printGreen(indent: Indent, msg: string): void {
     this.htmlLog(indent, greenColor, msg);
   }
 
-  red(indent: Indent, msg: string): void {
+  printRed(indent: Indent, msg: string): void {
     this.htmlLog(indent, redColor, msg);
   }
 
-  gray(indent: Indent, msg: string): void {
+  printGray(indent: Indent, msg: string): void {
     this.htmlLog(indent, grayColor, msg);
   }
 

@@ -32,11 +32,14 @@ class TestRig {
         }
         return new CompositeLogger_1.CompositeLogger(loggers);
     }
+    getConfig() {
+        return this.config;
+    }
     run(fnc) {
         var _a, _b, _c, _d, _e, _f, _g, _h;
         return __awaiter(this, void 0, void 0, function* () {
             yield ((_b = (_a = this.logger).setup) === null || _b === void 0 ? void 0 : _b.call(_a));
-            this.logger.blue(TestLogger_1.Indent.TestRig, ((_c = this.config) === null || _c === void 0 ? void 0 : _c.name) ? `Starting: ${this.config.name}` : 'Starting');
+            this.logger.printBlue(TestLogger_1.Indent.TestRig, ((_c = this.config) === null || _c === void 0 ? void 0 : _c.name) ? `Starting: ${this.config.name}` : 'Starting');
             try {
                 yield fnc({
                     rig: this,
@@ -53,16 +56,16 @@ class TestRig {
                             return test.execute(request);
                         }
                         catch (error) {
-                            this.logger.red(TestLogger_1.Indent.TestContent, error.message);
+                            this.logger.printRed(TestLogger_1.Indent.TestContent, error.message);
                             throw error;
                         }
                     }),
                 });
-                this.logger.blue(TestLogger_1.Indent.TestRig, ((_e = this.config) === null || _e === void 0 ? void 0 : _e.name) ? `Finished: ${this.config.name}` : 'Finished');
+                this.logger.printBlue(TestLogger_1.Indent.TestRig, ((_e = this.config) === null || _e === void 0 ? void 0 : _e.name) ? `Finished: ${this.config.name}` : 'Finished');
                 yield this.performSuccessTeardown();
             }
             catch (error) {
-                this.logger.red(TestLogger_1.Indent.TestRig, ((_f = this.config) === null || _f === void 0 ? void 0 : _f.name) ? `Failed: ${this.config.name}` : 'Failed');
+                this.logger.printRed(TestLogger_1.Indent.TestRig, ((_f = this.config) === null || _f === void 0 ? void 0 : _f.name) ? `Failed: ${this.config.name}` : 'Failed');
                 yield this.performFailureTeardown();
             }
             yield ((_h = (_g = this.logger).finish) === null || _h === void 0 ? void 0 : _h.call(_g));
@@ -90,9 +93,9 @@ class TestRig {
             if (this.rigSuccessTeardownEntries.length == 0) {
                 return;
             }
-            this.logger.blue(TestLogger_1.Indent.TestRig, 'Starting teardown after test success');
+            this.logger.printBlue(TestLogger_1.Indent.TestRig, 'Starting teardown after test success');
             for (const entry of this.rigSuccessTeardownEntries) {
-                this.logger.white(TestLogger_1.Indent.TestHeader, `Tearing down on success: ${entry.request.id}`);
+                this.logger.printWhite(TestLogger_1.Indent.TestHeader, `Tearing down on success: ${entry.request.id}`);
                 try {
                     yield ((_b = (_a = entry.request).rigSuccessTeardown) === null || _b === void 0 ? void 0 : _b.call(_a, entry.testStepResponseContext));
                 }
@@ -100,7 +103,7 @@ class TestRig {
                     // Only log, all teardown steps should be attempted
                 }
             }
-            this.logger.blue(TestLogger_1.Indent.TestRig, 'Teardown after test success completed');
+            this.logger.printBlue(TestLogger_1.Indent.TestRig, 'Teardown after test success completed');
         });
     }
     performFailureTeardown() {
@@ -109,9 +112,9 @@ class TestRig {
             if (this.rigFailureTeardownEntries.length == 0) {
                 return;
             }
-            this.logger.blue(TestLogger_1.Indent.TestRig, 'Starting teardown after test failure');
+            this.logger.printBlue(TestLogger_1.Indent.TestRig, 'Starting teardown after test failure');
             for (const entry of this.rigFailureTeardownEntries) {
-                this.logger.white(TestLogger_1.Indent.TestHeader, `Tearing down on failure: ${entry.request.id}`);
+                this.logger.printWhite(TestLogger_1.Indent.TestHeader, `Tearing down on failure: ${entry.request.id}`);
                 try {
                     yield ((_b = (_a = entry.request).rigFailureTeardown) === null || _b === void 0 ? void 0 : _b.call(_a, entry.testStepResponseContext));
                 }
@@ -119,7 +122,7 @@ class TestRig {
                     // Only log, all teardown steps should be attempted
                 }
             }
-            this.logger.blue(TestLogger_1.Indent.TestRig, 'Teardown after test failure completed');
+            this.logger.printBlue(TestLogger_1.Indent.TestRig, 'Teardown after test failure completed');
         });
     }
 }

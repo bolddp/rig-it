@@ -24,19 +24,19 @@ class HtmlLogger {
     htmlLog(indent, color, msg) {
         this.lines.push(`<p style="color: ${color}">${'&nbsp;'.repeat(indent * indentSize)}${msg.replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '')}</p>`);
     }
-    white(indent, msg) {
+    printWhite(indent, msg) {
         this.htmlLog(indent, whiteColor, msg);
     }
-    blue(indent, msg) {
+    printBlue(indent, msg) {
         this.htmlLog(indent, blueColor, msg);
     }
-    green(indent, msg) {
+    printGreen(indent, msg) {
         this.htmlLog(indent, greenColor, msg);
     }
-    red(indent, msg) {
+    printRed(indent, msg) {
         this.htmlLog(indent, redColor, msg);
     }
-    gray(indent, msg) {
+    printGray(indent, msg) {
         this.htmlLog(indent, grayColor, msg);
     }
     finish() {

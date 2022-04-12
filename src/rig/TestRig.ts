@@ -31,16 +31,20 @@ export class TestRig {
     this.logger = this.createCompositeLogger(config?.loggers);
   }
 
-  createCompositeLogger(loggers?: TestLogger[]): CompositeLogger {
+  private createCompositeLogger(loggers?: TestLogger[]): CompositeLogger {
     if ((loggers ?? []).length == 0) {
       loggers = [new ConsoleLogger()];
     }
     return new CompositeLogger(loggers!);
   }
 
+  getConfig(): TestRigConfig | undefined {
+    return this.config;
+  }
+
   async run(fnc: TestRigRunFunction) {
     await this.logger.setup?.();
-    this.logger.blue(
+    this.logger.printBlue(
       Indent.TestRig,
       this.config?.name ? `Starting: ${this.config.name}` : 'Starting'
     );
@@ -59,18 +63,21 @@ export class TestRig {
             });
             return test.execute(request);
           } catch (error: any) {
-            this.logger.red(Indent.TestContent, error.message);
+            this.logger.printRed(Indent.TestContent, error.message);
             throw error;
           }
         },
       });
-      this.logger.blue(
+      this.logger.printBlue(
         Indent.TestRig,
         this.config?.name ? `Finished: ${this.config.name}` : 'Finished'
       );
       await this.performSuccessTeardown();
     } catch (error: any) {
-      this.logger.red(Indent.TestRig, this.config?.name ? `Failed: ${this.config.name}` : 'Failed');
+      this.logger.printRed(
+        Indent.TestRig,
+        this.config?.name ? `Failed: ${this.config.name}` : 'Failed'
+      );
       await this.performFailureTeardown();
     }
     await this.logger.finish?.();
@@ -104,31 +111,31 @@ export class TestRig {
     if (this.rigSuccessTeardownEntries.length == 0) {
       return;
     }
-    this.logger.blue(Indent.TestRig, 'Starting teardown after test success');
+    this.logger.printBlue(Indent.TestRig, 'Starting teardown after test success');
     for (const entry of this.rigSuccessTeardownEntries) {
-      this.logger.white(Indent.TestHeader, `Tearing down on success: ${entry.request.id}`);
+      this.logger.printWhite(Indent.TestHeader, `Tearing down on success: ${entry.request.id}`);
       try {
         await entry.request.rigSuccessTeardown?.(entry.testStepResponseContext);
       } catch (error: any) {
         // Only log, all teardown steps should be attempted
       }
     }
-    this.logger.blue(Indent.TestRig, 'Teardown after test success completed');
+    this.logger.printBlue(Indent.TestRig, 'Teardown after test success completed');
   }
 
   async performFailureTeardown(): Promise<void> {
     if (this.rigFailureTeardownEntries.length == 0) {
       return;
     }
-    this.logger.blue(Indent.TestRig, 'Starting teardown after test failure');
+    this.logger.printBlue(Indent.TestRig, 'Starting teardown after test failure');
     for (const entry of this.rigFailureTeardownEntries) {
-      this.logger.white(Indent.TestHeader, `Tearing down on failure: ${entry.request.id}`);
+      this.logger.printWhite(Indent.TestHeader, `Tearing down on failure: ${entry.request.id}`);
       try {
         await entry.request.rigFailureTeardown?.(entry.testStepResponseContext);
       } catch (error: any) {
         // Only log, all teardown steps should be attempted
       }
     }
-    this.logger.blue(Indent.TestRig, 'Teardown after test failure completed');
+    this.logger.printBlue(Indent.TestRig, 'Teardown after test failure completed');
   }
 }

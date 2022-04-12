@@ -17,20 +17,20 @@ export class Test {
       test: this,
       removeFailureTeardown: (id) => {
         const count = this.config.rig.removeRigFailureTeardown(id);
-        this.config.logger.gray(
+        this.config.logger.printGray(
           Indent.TestContent,
           `Removed ${count} failure teardown for test ${id}`
         );
       },
       removeSuccessTeardown: (id) => {
         const count = this.config.rig.removeRigSuccessTeardown(id);
-        this.config.logger.gray(
+        this.config.logger.printGray(
           Indent.TestContent,
           `Removed ${count} success teardown for test ${id}`
         );
       },
     };
-    this.config.logger.white(Indent.TestHeader, `Test: ${request.id}`);
+    this.config.logger.printWhite(Indent.TestHeader, `Test: ${request.id}`);
 
     if (request.assert && request.assertError) {
       throw new Error(
@@ -40,8 +40,14 @@ export class Test {
 
     await request.arrange?.(ctx);
 
-    const ts = Date.now();
     const response = await request.act(ctx);
+
+    this.config.logger.reportTestResponse?.({
+      testRigName: this.config.rig.getConfig()?.name,
+      testId: request.id,
+      response,
+    });
+
     const testStepResponseContext: TestStepResponseContext = {
       ...ctx,
       response,
@@ -55,7 +61,7 @@ export class Test {
 
         try {
           await request.assert?.(testStepResponseContext);
-          this.config.logger?.green(Indent.TestContent, 'Test succeeded');
+          this.config.logger?.printGreen(Indent.TestContent, 'Test succeeded');
         } catch (error: any) {
           throw new Error(`Assertion failed! ${error.message.replace(/[\r\n]/g, ', ')}`);
         }
@@ -71,7 +77,7 @@ export class Test {
         throw new Error('Unexpected failure');
       } else {
         // Expected and got failure
-        this.config.logger?.green(Indent.TestContent, 'Test failed like expected');
+        this.config.logger?.printGreen(Indent.TestContent, 'Test failed, which was expected');
         this.addTeardownEntries({ request, testStepResponseContext });
         await request.assertError?.(testStepResponseContext);
       }

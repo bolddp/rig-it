@@ -1,7 +1,6 @@
 import { TestLogger } from '../logger/TestLogger';
 import { TestReporter } from '../reporter/TestReporter';
 import { TeardownEntry } from './TeardownEntry';
-import { CompositeLogger } from '../logger/CompositeLogger';
 import { TestRigRunContext } from './TestRigRunContext';
 export declare type TestRigRunFunction = (ctx: TestRigRunContext) => Promise<any>;
 export interface TestRigConfig {
@@ -19,7 +18,8 @@ export declare class TestRig {
     private rigFailureTeardownEntries;
     private rigSuccessTeardownEntries;
     constructor(config?: TestRigConfig);
-    createCompositeLogger(loggers?: TestLogger[]): CompositeLogger;
+    private createCompositeLogger;
+    getConfig(): TestRigConfig | undefined;
     run(fnc: TestRigRunFunction): Promise<void>;
     addRigFailureTeardown(entry: TeardownEntry): void;
     addRigSuccessTeardown(entry: TeardownEntry): void;

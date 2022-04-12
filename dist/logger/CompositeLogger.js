@@ -22,29 +22,37 @@ class CompositeLogger {
             });
         });
     }
-    white(indent, msg) {
+    printWhite(indent, msg) {
         this.loggers.forEach((logger) => {
-            logger.white(indent, msg);
+            logger.printWhite(indent, msg);
         });
     }
-    blue(indent, msg) {
+    printBlue(indent, msg) {
         this.loggers.forEach((logger) => {
-            logger.blue(indent, msg);
+            logger.printBlue(indent, msg);
         });
     }
-    green(indent, msg) {
+    printGreen(indent, msg) {
         this.loggers.forEach((logger) => {
-            logger.green(indent, msg);
+            logger.printGreen(indent, msg);
         });
     }
-    red(indent, msg) {
+    printRed(indent, msg) {
         this.loggers.forEach((logger) => {
-            logger.red(indent, msg);
+            logger.printRed(indent, msg);
         });
     }
-    gray(indent, msg) {
+    printGray(indent, msg) {
         this.loggers.forEach((logger) => {
-            logger.gray(indent, msg);
+            logger.printGray(indent, msg);
+        });
+    }
+    reportTestResponse(params) {
+        var _a;
+        return __awaiter(this, void 0, void 0, function* () {
+            for (const logger of this.loggers) {
+                yield ((_a = logger.reportTestResponse) === null || _a === void 0 ? void 0 : _a.call(logger, params));
+            }
         });
     }
     finish() {

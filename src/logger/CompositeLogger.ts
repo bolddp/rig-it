@@ -1,3 +1,4 @@
+import { TestResponse } from '../connector/TestResponse';
 import { Indent, TestLogger } from './TestLogger';
 
 export class CompositeLogger implements TestLogger {
@@ -13,34 +14,44 @@ export class CompositeLogger implements TestLogger {
     });
   }
 
-  white(indent: Indent, msg: string): void {
+  printWhite(indent: Indent, msg: string): void {
     this.loggers.forEach((logger) => {
-      logger.white(indent, msg);
+      logger.printWhite(indent, msg);
     });
   }
 
-  blue(indent: Indent, msg: string): void {
+  printBlue(indent: Indent, msg: string): void {
     this.loggers.forEach((logger) => {
-      logger.blue(indent, msg);
+      logger.printBlue(indent, msg);
     });
   }
 
-  green(indent: Indent, msg: string): void {
+  printGreen(indent: Indent, msg: string): void {
     this.loggers.forEach((logger) => {
-      logger.green(indent, msg);
+      logger.printGreen(indent, msg);
     });
   }
 
-  red(indent: Indent, msg: string): void {
+  printRed(indent: Indent, msg: string): void {
     this.loggers.forEach((logger) => {
-      logger.red(indent, msg);
+      logger.printRed(indent, msg);
     });
   }
 
-  gray(indent: Indent, msg: string): void {
+  printGray(indent: Indent, msg: string): void {
     this.loggers.forEach((logger) => {
-      logger.gray(indent, msg);
+      logger.printGray(indent, msg);
     });
+  }
+
+  async reportTestResponse?(params: {
+    testRigName?: string;
+    testId: string;
+    response: TestResponse;
+  }): Promise<void> {
+    for (const logger of this.loggers) {
+      await logger.reportTestResponse?.(params);
+    }
   }
 
   async finish() {

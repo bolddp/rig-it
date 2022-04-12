@@ -10,19 +10,19 @@ export class ConsoleLogger implements TestLogger {
     console.log(`${this.getIndent(indent)}${msg}`);
   }
 
-  white(indent: Indent, msg: string): void {
+  printWhite(indent: Indent, msg: string): void {
     this.log(indent, chalk.white(msg));
   }
-  blue(indent: Indent, msg: string): void {
+  printBlue(indent: Indent, msg: string): void {
     this.log(indent, chalk.blue(msg));
   }
-  green(indent: Indent, msg: string): void {
+  printGreen(indent: Indent, msg: string): void {
     this.log(indent, chalk.green(msg));
   }
-  red(indent: Indent, msg: string): void {
+  printRed(indent: Indent, msg: string): void {
     this.log(indent, chalk.red(msg));
   }
-  gray(indent: Indent, msg: string): void {
+  printGray(indent: Indent, msg: string): void {
     this.log(indent, chalk.gray(msg));
   }
 }
