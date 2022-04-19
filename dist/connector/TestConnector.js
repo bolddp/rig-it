@@ -14,7 +14,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TestConnector = void 0;
 const axios_1 = __importDefault(require("axios"));
-const TestReporter_1 = require("../reporter/TestReporter");
 const DEFAULT_REQUEST_TIMEOUT = 5000;
 class TestConnector {
     constructor(config, logger) {
@@ -83,14 +82,14 @@ class TestConnector {
         return result;
     }
     request(request) {
-        var _a, _b;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q;
         return __awaiter(this, void 0, void 0, function* () {
             const config = this.constructCompositeAxiosConfig(request);
             const ts = Date.now();
-            this.logger.printGray(TestReporter_1.Indent.TestContent, `${config.method} ${config.baseURL}${axios_1.default.getUri(config)}`);
+            (_d = (_c = (_b = (_a = this.logger) === null || _a === void 0 ? void 0 : _a.log) === null || _b === void 0 ? void 0 : _b.testStep) === null || _c === void 0 ? void 0 : _c.info) === null || _d === void 0 ? void 0 : _d.call(_c, `${config.method} ${config.baseURL}${axios_1.default.getUri(config)}`);
             try {
                 const response = yield axios_1.default.request(config);
-                this.logger.printGreen(TestReporter_1.Indent.TestContent, `HTTP ${response.status} - ${JSON.stringify((_a = response.data) !== null && _a !== void 0 ? _a : '').length} bytes in ${Date.now() - ts} ms`);
+                (_g = (_f = (_e = this.logger.log) === null || _e === void 0 ? void 0 : _e.testStep) === null || _f === void 0 ? void 0 : _f.success) === null || _g === void 0 ? void 0 : _g.call(_f, `HTTP ${response.status} - ${JSON.stringify((_h = response.data) !== null && _h !== void 0 ? _h : '').length} bytes in ${Date.now() - ts} ms`);
                 return {
                     isOk: true,
                     status: response.status,
@@ -101,10 +100,10 @@ class TestConnector {
             catch (error) {
                 if (!error.response) {
                     // No response at all was received, e.g. timeout or invalid URL
-                    this.logger.printRed(TestReporter_1.Indent.TestContent, `${config.method} failed in ${Date.now() - ts} ms : ${error.message}`);
+                    (_l = (_k = (_j = this.logger.log) === null || _j === void 0 ? void 0 : _j.testStep) === null || _k === void 0 ? void 0 : _k.error) === null || _l === void 0 ? void 0 : _l.call(_k, `${config.method} failed in ${Date.now() - ts} ms : ${error.message}`);
                     throw error;
                 }
-                this.logger.printRed(TestReporter_1.Indent.TestContent, `HTTP ${error.response.status} - ${JSON.stringify((_b = error.response.data) !== null && _b !== void 0 ? _b : '').length} bytes in ${Date.now() - ts} ms`);
+                (_p = (_o = (_m = this.logger.log) === null || _m === void 0 ? void 0 : _m.testStep) === null || _o === void 0 ? void 0 : _o.error) === null || _p === void 0 ? void 0 : _p.call(_o, `HTTP ${error.response.status} - ${JSON.stringify((_q = error.response.data) !== null && _q !== void 0 ? _q : '').length} bytes in ${Date.now() - ts} ms`);
                 const rsp = {
                     isOk: false,
                     status: error.response.status,

@@ -1,13 +1,19 @@
 import { TestResponse } from '../connector/TestResponse';
 export interface TestReporter {
     setup?(): Promise<void>;
-    printWhite(indent: Indent, msg: string): void;
-    printBlue(indent: Indent, msg: string): void;
-    printGreen(indent: Indent, msg: string): void;
-    printRed(indent: Indent, msg: string): void;
-    printGray(indent: Indent, msg: string): void;
+    log?: TestReporterLogger;
     reportTestResponse?(testId: string, response: TestResponse): Promise<void>;
     finish?(success: boolean): Promise<void>;
+}
+export interface TestReporterLoggerLevels {
+    info?: (msg: string) => void;
+    success?: (msg: string) => void;
+    error?: (msg: string) => void;
+}
+export interface TestReporterLogger {
+    rig?: TestReporterLoggerLevels;
+    test?: TestReporterLoggerLevels;
+    testStep?: TestReporterLoggerLevels;
 }
 export declare enum Indent {
     TestRig = 0,

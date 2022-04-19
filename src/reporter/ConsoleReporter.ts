@@ -1,28 +1,26 @@
 import chalk from 'chalk';
-import { Indent, TestReporter } from './TestReporter';
+import { TestReporter, TestReporterLogger } from './TestReporter';
 
 export class ConsoleReporter implements TestReporter {
-  private getIndent(indent: Indent): string {
-    return ' '.repeat(indent * 2);
-  }
+  log: TestReporterLogger = {
+    rig: {
+      info: (msg) => this.logRow(0, chalk.blue(msg)),
+      error: (msg) => this.logRow(0, chalk.red(msg)),
+      success: (msg) => this.logRow(0, chalk.blue(msg)),
+    },
+    test: {
+      info: (msg) => this.logRow(1, chalk.white(msg)),
+      error: (msg) => this.logRow(1, chalk.red(msg)),
+      success: (msg) => this.logRow(1, chalk.green(msg)),
+    },
+    testStep: {
+      info: (msg) => this.logRow(2, chalk.gray(msg)),
+      error: (msg) => this.logRow(2, chalk.red(msg)),
+      success: (msg) => this.logRow(2, chalk.green(msg)),
+    },
+  };
 
-  private log(indent: Indent, msg: string): void {
-    console.log(`${this.getIndent(indent)}${msg}`);
-  }
-
-  printWhite(indent: Indent, msg: string): void {
-    this.log(indent, chalk.white(msg));
-  }
-  printBlue(indent: Indent, msg: string): void {
-    this.log(indent, chalk.blue(msg));
-  }
-  printGreen(indent: Indent, msg: string): void {
-    this.log(indent, chalk.green(msg));
-  }
-  printRed(indent: Indent, msg: string): void {
-    this.log(indent, chalk.red(msg));
-  }
-  printGray(indent: Indent, msg: string): void {
-    this.log(indent, chalk.gray(msg));
+  private logRow(indent: number, msg: string): void {
+    console.log(`${' '.repeat(indent * 2)}${msg}`);
   }
 }

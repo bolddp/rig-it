@@ -21,20 +21,18 @@ export class Test {
       test: this,
       removeFailureTeardown: (id) => {
         const count = this.config.rig.removeRigFailureTeardown(id);
-        this.config.reporter.printGray(
-          Indent.TestContent,
+        this.config.reporter.log?.testStep?.info?.(
           `Removed ${count} failure teardown for test ${id}`
         );
       },
       removeSuccessTeardown: (id) => {
         const count = this.config.rig.removeRigSuccessTeardown(id);
-        this.config.reporter.printGray(
-          Indent.TestContent,
+        this.config.reporter.log?.testStep?.info?.(
           `Removed ${count} success teardown for test ${id}`
         );
       },
     };
-    this.config.reporter.printWhite(Indent.TestHeader, `Test: ${request.id}`);
+    this.config.reporter.log?.test?.info?.(`Test: ${request.id}`);
 
     if (request.assert && request.assertError) {
       throw new Error(
@@ -61,7 +59,7 @@ export class Test {
 
         try {
           await request.assert?.(testStepResponseContext);
-          this.config.reporter?.printGreen(Indent.TestContent, 'Test succeeded');
+          this.config.reporter?.log?.testStep?.success?.('Test succeeded');
         } catch (error: any) {
           throw new Error(`Assertion failed! ${error.message.replace(/[\r\n]/g, ', ')}`);
         }
@@ -77,7 +75,7 @@ export class Test {
         throw new Error('Unexpected failure');
       } else {
         // Expected and got failure
-        this.config.reporter?.printGreen(Indent.TestContent, 'Test failed, which was expected');
+        this.config.reporter?.log?.testStep?.success?.('Test failed, which was expected');
         this.addTeardownEntries({ request, testStepResponseContext });
         await request.assertError?.(testStepResponseContext);
       }

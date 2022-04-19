@@ -32,50 +32,64 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.HtmlReporter = void 0;
-const path = __importStar(require("path"));
+exports.FileReporter = void 0;
 const fs = __importStar(require("fs"));
-class HtmlReporter {
+const path = __importStar(require("path"));
+class FileReporter {
     constructor(config) {
-        this.lines = [];
+        this.logRows = [];
         this.log = {
             rig: {
-                info: (msg) => this.htmlLog(0, blueColor, msg),
-                error: (msg) => this.htmlLog(0, redColor, msg),
-                success: (msg) => this.htmlLog(0, blueColor, msg),
+                info: (msg) => this.logRow(0, msg),
+                error: (msg) => this.logRow(0, msg),
+                success: (msg) => this.logRow(0, msg),
             },
             test: {
-                info: (msg) => this.htmlLog(1, whiteColor, msg),
-                error: (msg) => this.htmlLog(1, redColor, msg),
-                success: (msg) => this.htmlLog(1, greenColor, msg),
+                info: (msg) => this.logRow(1, msg),
+                error: (msg) => this.logRow(1, msg),
+                success: (msg) => this.logRow(1, msg),
             },
             testStep: {
-                info: (msg) => this.htmlLog(2, grayColor, msg),
-                error: (msg) => this.htmlLog(2, redColor, msg),
-                success: (msg) => this.htmlLog(2, greenColor, msg),
+                info: (msg) => this.logRow(2, msg),
+                error: (msg) => this.logRow(2, msg),
+                success: (msg) => this.logRow(2, msg),
             },
         };
         this.config = config;
     }
-    htmlLog(indent, color, msg) {
-        this.lines.push(`<p style="color: ${color}">${'&nbsp;'.repeat(indent * indentSize)}${msg.replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '')}</p>`);
+    reportTestResponse(testId, response) {
+        var _a, _b;
+        return __awaiter(this, void 0, void 0, function* () {
+            const fileName = (_b = (_a = this.config).testResponseFileNameResolver) === null || _b === void 0 ? void 0 : _b.call(_a, testId);
+            if (fileName) {
+                yield this.writeFile({
+                    fileName,
+                    fileContents: JSON.stringify(response, null, 2),
+                });
+            }
+        });
     }
     finish() {
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            const style = `<style>
-    p { margin: 0 }
-    </style>`;
-            const body = `${style}<body style="background-color: #000000; font-family: sans-serif">${this.lines.join('')}</body>`;
-            const filePath = path.dirname(this.config.fileName);
+            const fileName = (_b = (_a = this.config).logsFileNameResolver) === null || _b === void 0 ? void 0 : _b.call(_a);
+            if (fileName) {
+                yield this.writeFile({
+                    fileName,
+                    fileContents: this.logRows.join('\r\n'),
+                });
+            }
+        });
+    }
+    logRow(indent, msg) {
+        this.logRows.push(`${' '.repeat(indent * 2)}${msg}`);
+    }
+    writeFile(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const filePath = path.dirname(params.fileName);
             fs.mkdirSync(filePath, { recursive: true });
-            fs.writeFileSync(this.config.fileName, body);
+            fs.writeFileSync(params.fileName, params.fileContents);
         });
     }
 }
-exports.HtmlReporter = HtmlReporter;
-const whiteColor = '#ffffff';
-const blueColor = '#1e90ff';
-const greenColor = '#00ff00';
-const redColor = '#ff0000';
-const grayColor = '#999999';
-const indentSize = 4;
+exports.FileReporter = FileReporter;

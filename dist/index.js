@@ -17,6 +17,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./connector/TestConnector"), exports);
 __exportStar(require("./connector/TestResponse"), exports);
 __exportStar(require("./reporter/ConsoleReporter"), exports);
+__exportStar(require("./reporter/FileReporter"), exports);
 __exportStar(require("./reporter/HtmlReporter"), exports);
 __exportStar(require("./reporter/TestReporter"), exports);
 __exportStar(require("./rig/TestRig"), exports);

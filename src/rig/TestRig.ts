@@ -1,6 +1,6 @@
 import { TestConnector, TestConnectorConfig } from '../connector/TestConnector';
 import { ConsoleReporter } from '../reporter/ConsoleReporter';
-import { Indent, TestReporter } from '../reporter/TestReporter';
+import { TestReporter } from '../reporter/TestReporter';
 import { TestSetup } from '../test/TestSetup';
 import { Test } from '../test/Test';
 import { CompositeReporter } from '../reporter/CompositeReporter';
@@ -48,8 +48,7 @@ export class TestRig {
   async run(fnc: TestRigRunFunction) {
     let isSuccess = true;
     await this.reporter.setup?.();
-    this.reporter.printBlue(
-      Indent.TestRig,
+    this.reporter.log?.rig?.info?.(
       this.config?.name ? `Starting: ${this.config.name}` : 'Starting'
     );
     try {
@@ -64,24 +63,21 @@ export class TestRig {
               rig: this,
               reporter: this.reporter,
             });
-            return test.execute(request);
+            const rsp = await test.execute(request);
+            return rsp;
           } catch (error: any) {
-            this.reporter.printRed(Indent.TestContent, error.message);
+            this.reporter.log?.testStep?.error?.(error.message);
             throw error;
           }
         },
       });
-      this.reporter.printBlue(
-        Indent.TestRig,
+      this.reporter.log?.rig?.success?.(
         this.config?.name ? `Finished: ${this.config.name}` : 'Finished'
       );
       await this.performSuccessTeardown();
     } catch (error: any) {
       isSuccess = false;
-      this.reporter.printRed(
-        Indent.TestRig,
-        this.config?.name ? `Failed: ${this.config.name}` : 'Failed'
-      );
+      this.reporter.log?.rig?.error?.(this.config?.name ? `Failed: ${this.config.name}` : 'Failed');
       await this.performFailureTeardown();
     }
     await this.reporter.finish?.(isSuccess);
@@ -115,31 +111,31 @@ export class TestRig {
     if (this.rigSuccessTeardownEntries.length == 0) {
       return;
     }
-    this.reporter.printBlue(Indent.TestRig, 'Starting teardown after test success');
+    this.reporter.log?.rig?.info?.('Starting teardown after test success');
     for (const entry of this.rigSuccessTeardownEntries) {
-      this.reporter.printWhite(Indent.TestHeader, `Tearing down on success: ${entry.request.id}`);
+      this.reporter.log?.test?.info?.(`Tearing down on success: ${entry.request.id}`);
       try {
         await entry.request.rigSuccessTeardown?.(entry.testStepResponseContext);
       } catch (error: any) {
         // Only log, all teardown steps should be attempted
       }
     }
-    this.reporter.printBlue(Indent.TestRig, 'Teardown after test success completed');
+    this.reporter.log?.rig?.info?.('Teardown after test success completed');
   }
 
   async performFailureTeardown(): Promise<void> {
     if (this.rigFailureTeardownEntries.length == 0) {
       return;
     }
-    this.reporter.printBlue(Indent.TestRig, 'Starting teardown after test failure');
+    this.reporter.log?.rig?.info?.('Starting teardown after test failure');
     for (const entry of this.rigFailureTeardownEntries) {
-      this.reporter.printWhite(Indent.TestHeader, `Tearing down on failure: ${entry.request.id}`);
+      this.reporter.log?.test?.info?.(`Tearing down on failure: ${entry.request.id}`);
       try {
         await entry.request.rigFailureTeardown?.(entry.testStepResponseContext);
       } catch (error: any) {
         // Only log, all teardown steps should be attempted
       }
     }
-    this.reporter.printBlue(Indent.TestRig, 'Teardown after test failure completed');
+    this.reporter.log?.rig?.info?.('Teardown after test failure completed');
   }
 }

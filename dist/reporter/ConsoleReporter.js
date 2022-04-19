@@ -6,26 +6,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ConsoleReporter = void 0;
 const chalk_1 = __importDefault(require("chalk"));
 class ConsoleReporter {
-    getIndent(indent) {
-        return ' '.repeat(indent * 2);
+    constructor() {
+        this.log = {
+            rig: {
+                info: (msg) => this.logRow(0, chalk_1.default.blue(msg)),
+                error: (msg) => this.logRow(0, chalk_1.default.red(msg)),
+                success: (msg) => this.logRow(0, chalk_1.default.blue(msg)),
+            },
+            test: {
+                info: (msg) => this.logRow(1, chalk_1.default.white(msg)),
+                error: (msg) => this.logRow(1, chalk_1.default.red(msg)),
+                success: (msg) => this.logRow(1, chalk_1.default.green(msg)),
+            },
+            testStep: {
+                info: (msg) => this.logRow(2, chalk_1.default.gray(msg)),
+                error: (msg) => this.logRow(2, chalk_1.default.red(msg)),
+                success: (msg) => this.logRow(2, chalk_1.default.green(msg)),
+            },
+        };
     }
-    log(indent, msg) {
-        console.log(`${this.getIndent(indent)}${msg}`);
-    }
-    printWhite(indent, msg) {
-        this.log(indent, chalk_1.default.white(msg));
-    }
-    printBlue(indent, msg) {
-        this.log(indent, chalk_1.default.blue(msg));
-    }
-    printGreen(indent, msg) {
-        this.log(indent, chalk_1.default.green(msg));
-    }
-    printRed(indent, msg) {
-        this.log(indent, chalk_1.default.red(msg));
-    }
-    printGray(indent, msg) {
-        this.log(indent, chalk_1.default.gray(msg));
+    logRow(indent, msg) {
+        console.log(`${' '.repeat(indent * 2)}${msg}`);
     }
 }
 exports.ConsoleReporter = ConsoleReporter;

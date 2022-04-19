@@ -99,14 +99,10 @@ export class TestConnector {
   async request(request: TestConnectorMethodRequest): Promise<TestResponse> {
     const config = this.constructCompositeAxiosConfig(request);
     const ts = Date.now();
-    this.logger.printGray(
-      Indent.TestContent,
-      `${config.method} ${config.baseURL}${axios.getUri(config)}`
-    );
+    this.logger?.log?.testStep?.info?.(`${config.method} ${config.baseURL}${axios.getUri(config)}`);
     try {
       const response = await axios.request(config);
-      this.logger.printGreen(
-        Indent.TestContent,
+      this.logger.log?.testStep?.success?.(
         `HTTP ${response.status} - ${JSON.stringify(response.data ?? '').length} bytes in ${
           Date.now() - ts
         } ms`
@@ -120,14 +116,12 @@ export class TestConnector {
     } catch (error: any) {
       if (!error.response) {
         // No response at all was received, e.g. timeout or invalid URL
-        this.logger.printRed(
-          Indent.TestContent,
+        this.logger.log?.testStep?.error?.(
           `${config.method} failed in ${Date.now() - ts} ms : ${error.message}`
         );
         throw error;
       }
-      this.logger.printRed(
-        Indent.TestContent,
+      this.logger.log?.testStep?.error?.(
         `HTTP ${error.response.status} - ${
           JSON.stringify(error.response.data ?? '').length
         } bytes in ${Date.now() - ts} ms`

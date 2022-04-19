@@ -1,22 +1,21 @@
-import chalk from 'chalk';
-import { Indent, TestReporter } from './TestReporter';
+import * as path from 'path';
+import * as fs from 'fs';
+import { Indent, TestReporter, TestReporterLogger } from './TestReporter';
 
-export type HtmlReporterCallback = (html: string) => Promise<void>;
-
-const whiteColor = '#ffffff';
-const blueColor = '#1e90ff';
-const greenColor = '#00ff00';
-const redColor = '#ff0000';
-const grayColor = '#999999';
-
-const indentSize = 4;
+export interface HtmlReporterConfig {
+  /**
+   * The full path to the filename where the HTML logs should be persisted.
+   * If the path doesn't exist, the reporter will try to create it recursively.
+   */
+  fileName: string;
+}
 
 export class HtmlReporter implements TestReporter {
+  private config: HtmlReporterConfig;
   private lines: string[] = [];
-  private callback: HtmlReporterCallback;
 
-  constructor(callback: HtmlReporterCallback) {
-    this.callback = callback;
+  constructor(config: HtmlReporterConfig) {
+    this.config = config;
   }
 
   private htmlLog(indent: Indent, color: string, msg: string) {
@@ -28,25 +27,23 @@ export class HtmlReporter implements TestReporter {
     );
   }
 
-  printWhite(indent: Indent, msg: string): void {
-    this.htmlLog(indent, whiteColor, msg);
-  }
-
-  printBlue(indent: Indent, msg: string): void {
-    this.htmlLog(indent, blueColor, msg);
-  }
-
-  printGreen(indent: Indent, msg: string): void {
-    this.htmlLog(indent, greenColor, msg);
-  }
-
-  printRed(indent: Indent, msg: string): void {
-    this.htmlLog(indent, redColor, msg);
-  }
-
-  printGray(indent: Indent, msg: string): void {
-    this.htmlLog(indent, grayColor, msg);
-  }
+  log: TestReporterLogger = {
+    rig: {
+      info: (msg) => this.htmlLog(0, blueColor, msg),
+      error: (msg) => this.htmlLog(0, redColor, msg),
+      success: (msg) => this.htmlLog(0, blueColor, msg),
+    },
+    test: {
+      info: (msg) => this.htmlLog(1, whiteColor, msg),
+      error: (msg) => this.htmlLog(1, redColor, msg),
+      success: (msg) => this.htmlLog(1, greenColor, msg),
+    },
+    testStep: {
+      info: (msg) => this.htmlLog(2, grayColor, msg),
+      error: (msg) => this.htmlLog(2, redColor, msg),
+      success: (msg) => this.htmlLog(2, greenColor, msg),
+    },
+  };
 
   async finish(): Promise<void> {
     const style = `<style>
@@ -55,6 +52,18 @@ export class HtmlReporter implements TestReporter {
     const body = `${style}<body style="background-color: #000000; font-family: sans-serif">${this.lines.join(
       ''
     )}</body>`;
-    await this.callback(body);
+    const filePath = path.dirname(this.config.fileName);
+    fs.mkdirSync(filePath, { recursive: true });
+    fs.writeFileSync(this.config.fileName, body);
   }
 }
+
+export type HtmlReporterCallback = (html: string) => Promise<void>;
+
+const whiteColor = '#ffffff';
+const blueColor = '#1e90ff';
+const greenColor = '#00ff00';
+const redColor = '#ff0000';
+const grayColor = '#999999';
+
+const indentSize = 4;

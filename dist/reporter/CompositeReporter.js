@@ -12,6 +12,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CompositeReporter = void 0;
 class CompositeReporter {
     constructor(reporters) {
+        this.log = {
+            rig: {
+                info: (msg) => this.reporters.forEach((r) => { var _a, _b, _c; return (_c = (_b = (_a = r.log) === null || _a === void 0 ? void 0 : _a.rig) === null || _b === void 0 ? void 0 : _b.info) === null || _c === void 0 ? void 0 : _c.call(_b, msg); }),
+                success: (msg) => this.reporters.forEach((r) => { var _a, _b, _c; return (_c = (_b = (_a = r.log) === null || _a === void 0 ? void 0 : _a.rig) === null || _b === void 0 ? void 0 : _b.success) === null || _c === void 0 ? void 0 : _c.call(_b, msg); }),
+                error: (msg) => this.reporters.forEach((r) => { var _a, _b, _c; return (_c = (_b = (_a = r.log) === null || _a === void 0 ? void 0 : _a.rig) === null || _b === void 0 ? void 0 : _b.error) === null || _c === void 0 ? void 0 : _c.call(_b, msg); }),
+            },
+            test: {
+                info: (msg) => this.reporters.forEach((r) => { var _a, _b, _c; return (_c = (_b = (_a = r.log) === null || _a === void 0 ? void 0 : _a.test) === null || _b === void 0 ? void 0 : _b.info) === null || _c === void 0 ? void 0 : _c.call(_b, msg); }),
+                success: (msg) => this.reporters.forEach((r) => { var _a, _b, _c; return (_c = (_b = (_a = r.log) === null || _a === void 0 ? void 0 : _a.test) === null || _b === void 0 ? void 0 : _b.success) === null || _c === void 0 ? void 0 : _c.call(_b, msg); }),
+                error: (msg) => this.reporters.forEach((r) => { var _a, _b, _c; return (_c = (_b = (_a = r.log) === null || _a === void 0 ? void 0 : _a.test) === null || _b === void 0 ? void 0 : _b.error) === null || _c === void 0 ? void 0 : _c.call(_b, msg); }),
+            },
+            testStep: {
+                info: (msg) => this.reporters.forEach((r) => { var _a, _b, _c; return (_c = (_b = (_a = r.log) === null || _a === void 0 ? void 0 : _a.testStep) === null || _b === void 0 ? void 0 : _b.info) === null || _c === void 0 ? void 0 : _c.call(_b, msg); }),
+                success: (msg) => this.reporters.forEach((r) => { var _a, _b, _c; return (_c = (_b = (_a = r.log) === null || _a === void 0 ? void 0 : _a.testStep) === null || _b === void 0 ? void 0 : _b.success) === null || _c === void 0 ? void 0 : _c.call(_b, msg); }),
+                error: (msg) => this.reporters.forEach((r) => { var _a, _b, _c; return (_c = (_b = (_a = r.log) === null || _a === void 0 ? void 0 : _a.testStep) === null || _b === void 0 ? void 0 : _b.error) === null || _c === void 0 ? void 0 : _c.call(_b, msg); }),
+            },
+        };
         this.reporters = reporters !== null && reporters !== void 0 ? reporters : [];
     }
     setup() {
@@ -20,31 +37,6 @@ class CompositeReporter {
                 var _a;
                 (_a = logger.setup) === null || _a === void 0 ? void 0 : _a.call(logger);
             });
-        });
-    }
-    printWhite(indent, msg) {
-        this.reporters.forEach((logger) => {
-            logger.printWhite(indent, msg);
-        });
-    }
-    printBlue(indent, msg) {
-        this.reporters.forEach((logger) => {
-            logger.printBlue(indent, msg);
-        });
-    }
-    printGreen(indent, msg) {
-        this.reporters.forEach((logger) => {
-            logger.printGreen(indent, msg);
-        });
-    }
-    printRed(indent, msg) {
-        this.reporters.forEach((logger) => {
-            logger.printRed(indent, msg);
-        });
-    }
-    printGray(indent, msg) {
-        this.reporters.forEach((logger) => {
-            logger.printGray(indent, msg);
         });
     }
     reportTestResponse(testId, response) {

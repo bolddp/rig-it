@@ -10,33 +10,34 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Test = void 0;
-const TestReporter_1 = require("../reporter/TestReporter");
 class Test {
     constructor(config) {
         this.config = config;
     }
     execute(request) {
-        var _a, _b, _c, _d, _e, _f, _g;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r;
         return __awaiter(this, void 0, void 0, function* () {
             const ctx = {
                 rig: this.config.rig,
                 test: this,
                 removeFailureTeardown: (id) => {
+                    var _a, _b, _c;
                     const count = this.config.rig.removeRigFailureTeardown(id);
-                    this.config.reporter.printGray(TestReporter_1.Indent.TestContent, `Removed ${count} failure teardown for test ${id}`);
+                    (_c = (_b = (_a = this.config.reporter.log) === null || _a === void 0 ? void 0 : _a.testStep) === null || _b === void 0 ? void 0 : _b.info) === null || _c === void 0 ? void 0 : _c.call(_b, `Removed ${count} failure teardown for test ${id}`);
                 },
                 removeSuccessTeardown: (id) => {
+                    var _a, _b, _c;
                     const count = this.config.rig.removeRigSuccessTeardown(id);
-                    this.config.reporter.printGray(TestReporter_1.Indent.TestContent, `Removed ${count} success teardown for test ${id}`);
+                    (_c = (_b = (_a = this.config.reporter.log) === null || _a === void 0 ? void 0 : _a.testStep) === null || _b === void 0 ? void 0 : _b.info) === null || _c === void 0 ? void 0 : _c.call(_b, `Removed ${count} success teardown for test ${id}`);
                 },
             };
-            this.config.reporter.printWhite(TestReporter_1.Indent.TestHeader, `Test: ${request.id}`);
+            (_c = (_b = (_a = this.config.reporter.log) === null || _a === void 0 ? void 0 : _a.test) === null || _b === void 0 ? void 0 : _b.info) === null || _c === void 0 ? void 0 : _c.call(_b, `Test: ${request.id}`);
             if (request.assert && request.assertError) {
                 throw new Error(`Invalid setup for test ${request.id}: either assert() or assertError() can be set but not both`);
             }
-            yield ((_a = request.arrange) === null || _a === void 0 ? void 0 : _a.call(request, ctx));
+            yield ((_d = request.arrange) === null || _d === void 0 ? void 0 : _d.call(request, ctx));
             const response = yield request.act(ctx);
-            (_c = (_b = this.config.reporter).reportTestResponse) === null || _c === void 0 ? void 0 : _c.call(_b, request.id, response);
+            (_f = (_e = this.config.reporter).reportTestResponse) === null || _f === void 0 ? void 0 : _f.call(_e, request.id, response);
             const testStepResponseContext = Object.assign(Object.assign({}, ctx), { response });
             if (response.isOk) {
                 if (!request.assertError) {
@@ -44,8 +45,8 @@ class Test {
                     // Adding teardown entry before the assertion to get proper teardown
                     this.addTeardownEntries({ request, testStepResponseContext });
                     try {
-                        yield ((_d = request.assert) === null || _d === void 0 ? void 0 : _d.call(request, testStepResponseContext));
-                        (_e = this.config.reporter) === null || _e === void 0 ? void 0 : _e.printGreen(TestReporter_1.Indent.TestContent, 'Test succeeded');
+                        yield ((_g = request.assert) === null || _g === void 0 ? void 0 : _g.call(request, testStepResponseContext));
+                        (_l = (_k = (_j = (_h = this.config.reporter) === null || _h === void 0 ? void 0 : _h.log) === null || _j === void 0 ? void 0 : _j.testStep) === null || _k === void 0 ? void 0 : _k.success) === null || _l === void 0 ? void 0 : _l.call(_k, 'Test succeeded');
                     }
                     catch (error) {
                         throw new Error(`Assertion failed! ${error.message.replace(/[\r\n]/g, ', ')}`);
@@ -65,9 +66,9 @@ class Test {
                 }
                 else {
                     // Expected and got failure
-                    (_f = this.config.reporter) === null || _f === void 0 ? void 0 : _f.printGreen(TestReporter_1.Indent.TestContent, 'Test failed, which was expected');
+                    (_q = (_p = (_o = (_m = this.config.reporter) === null || _m === void 0 ? void 0 : _m.log) === null || _o === void 0 ? void 0 : _o.testStep) === null || _p === void 0 ? void 0 : _p.success) === null || _q === void 0 ? void 0 : _q.call(_p, 'Test failed, which was expected');
                     this.addTeardownEntries({ request, testStepResponseContext });
-                    yield ((_g = request.assertError) === null || _g === void 0 ? void 0 : _g.call(request, testStepResponseContext));
+                    yield ((_r = request.assertError) === null || _r === void 0 ? void 0 : _r.call(request, testStepResponseContext));
                 }
             }
             return response.data;

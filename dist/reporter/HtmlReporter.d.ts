@@ -1,14 +1,13 @@
-import { Indent, TestReporter } from './TestReporter';
-export declare type HtmlReporterCallback = (html: string) => Promise<void>;
+import { TestReporter, TestReporterLogger } from './TestReporter';
+export interface HtmlReporterConfig {
+    fileName: string;
+}
 export declare class HtmlReporter implements TestReporter {
+    private config;
     private lines;
-    private callback;
-    constructor(callback: HtmlReporterCallback);
+    constructor(config: HtmlReporterConfig);
     private htmlLog;
-    printWhite(indent: Indent, msg: string): void;
-    printBlue(indent: Indent, msg: string): void;
-    printGreen(indent: Indent, msg: string): void;
-    printRed(indent: Indent, msg: string): void;
-    printGray(indent: Indent, msg: string): void;
+    log: TestReporterLogger;
     finish(): Promise<void>;
 }
+export declare type HtmlReporterCallback = (html: string) => Promise<void>;

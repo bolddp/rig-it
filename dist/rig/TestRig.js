@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TestRig = void 0;
 const TestConnector_1 = require("../connector/TestConnector");
 const ConsoleReporter_1 = require("../reporter/ConsoleReporter");
-const TestReporter_1 = require("../reporter/TestReporter");
 const Test_1 = require("../test/Test");
 const CompositeReporter_1 = require("../reporter/CompositeReporter");
 /**
@@ -36,11 +35,11 @@ class TestRig {
         return this.config;
     }
     run(fnc) {
-        var _a, _b, _c, _d, _e, _f, _g;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r;
         return __awaiter(this, void 0, void 0, function* () {
             let isSuccess = true;
             yield ((_b = (_a = this.reporter).setup) === null || _b === void 0 ? void 0 : _b.call(_a));
-            this.reporter.printBlue(TestReporter_1.Indent.TestRig, ((_c = this.config) === null || _c === void 0 ? void 0 : _c.name) ? `Starting: ${this.config.name}` : 'Starting');
+            (_e = (_d = (_c = this.reporter.log) === null || _c === void 0 ? void 0 : _c.rig) === null || _d === void 0 ? void 0 : _d.info) === null || _e === void 0 ? void 0 : _e.call(_d, ((_f = this.config) === null || _f === void 0 ? void 0 : _f.name) ? `Starting: ${this.config.name}` : 'Starting');
             try {
                 yield fnc({
                     rig: this,
@@ -48,28 +47,30 @@ class TestRig {
                         return new TestConnector_1.TestConnector(config, this.reporter);
                     },
                     test: (request) => __awaiter(this, void 0, void 0, function* () {
+                        var _s, _t, _u;
                         try {
                             const test = new Test_1.Test({
                                 rig: this,
                                 reporter: this.reporter,
                             });
-                            return test.execute(request);
+                            const rsp = yield test.execute(request);
+                            return rsp;
                         }
                         catch (error) {
-                            this.reporter.printRed(TestReporter_1.Indent.TestContent, error.message);
+                            (_u = (_t = (_s = this.reporter.log) === null || _s === void 0 ? void 0 : _s.testStep) === null || _t === void 0 ? void 0 : _t.error) === null || _u === void 0 ? void 0 : _u.call(_t, error.message);
                             throw error;
                         }
                     }),
                 });
-                this.reporter.printBlue(TestReporter_1.Indent.TestRig, ((_d = this.config) === null || _d === void 0 ? void 0 : _d.name) ? `Finished: ${this.config.name}` : 'Finished');
+                (_j = (_h = (_g = this.reporter.log) === null || _g === void 0 ? void 0 : _g.rig) === null || _h === void 0 ? void 0 : _h.success) === null || _j === void 0 ? void 0 : _j.call(_h, ((_k = this.config) === null || _k === void 0 ? void 0 : _k.name) ? `Finished: ${this.config.name}` : 'Finished');
                 yield this.performSuccessTeardown();
             }
             catch (error) {
                 isSuccess = false;
-                this.reporter.printRed(TestReporter_1.Indent.TestRig, ((_e = this.config) === null || _e === void 0 ? void 0 : _e.name) ? `Failed: ${this.config.name}` : 'Failed');
+                (_o = (_m = (_l = this.reporter.log) === null || _l === void 0 ? void 0 : _l.rig) === null || _m === void 0 ? void 0 : _m.error) === null || _o === void 0 ? void 0 : _o.call(_m, ((_p = this.config) === null || _p === void 0 ? void 0 : _p.name) ? `Failed: ${this.config.name}` : 'Failed');
                 yield this.performFailureTeardown();
             }
-            yield ((_g = (_f = this.reporter).finish) === null || _g === void 0 ? void 0 : _g.call(_f, isSuccess));
+            yield ((_r = (_q = this.reporter).finish) === null || _r === void 0 ? void 0 : _r.call(_q, isSuccess));
         });
     }
     addRigFailureTeardown(entry) {
@@ -89,41 +90,41 @@ class TestRig {
         return count - this.rigSuccessTeardownEntries.length;
     }
     performSuccessTeardown() {
-        var _a, _b;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
         return __awaiter(this, void 0, void 0, function* () {
             if (this.rigSuccessTeardownEntries.length == 0) {
                 return;
             }
-            this.reporter.printBlue(TestReporter_1.Indent.TestRig, 'Starting teardown after test success');
+            (_c = (_b = (_a = this.reporter.log) === null || _a === void 0 ? void 0 : _a.rig) === null || _b === void 0 ? void 0 : _b.info) === null || _c === void 0 ? void 0 : _c.call(_b, 'Starting teardown after test success');
             for (const entry of this.rigSuccessTeardownEntries) {
-                this.reporter.printWhite(TestReporter_1.Indent.TestHeader, `Tearing down on success: ${entry.request.id}`);
+                (_f = (_e = (_d = this.reporter.log) === null || _d === void 0 ? void 0 : _d.test) === null || _e === void 0 ? void 0 : _e.info) === null || _f === void 0 ? void 0 : _f.call(_e, `Tearing down on success: ${entry.request.id}`);
                 try {
-                    yield ((_b = (_a = entry.request).rigSuccessTeardown) === null || _b === void 0 ? void 0 : _b.call(_a, entry.testStepResponseContext));
+                    yield ((_h = (_g = entry.request).rigSuccessTeardown) === null || _h === void 0 ? void 0 : _h.call(_g, entry.testStepResponseContext));
                 }
                 catch (error) {
                     // Only log, all teardown steps should be attempted
                 }
             }
-            this.reporter.printBlue(TestReporter_1.Indent.TestRig, 'Teardown after test success completed');
+            (_l = (_k = (_j = this.reporter.log) === null || _j === void 0 ? void 0 : _j.rig) === null || _k === void 0 ? void 0 : _k.info) === null || _l === void 0 ? void 0 : _l.call(_k, 'Teardown after test success completed');
         });
     }
     performFailureTeardown() {
-        var _a, _b;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
         return __awaiter(this, void 0, void 0, function* () {
             if (this.rigFailureTeardownEntries.length == 0) {
                 return;
             }
-            this.reporter.printBlue(TestReporter_1.Indent.TestRig, 'Starting teardown after test failure');
+            (_c = (_b = (_a = this.reporter.log) === null || _a === void 0 ? void 0 : _a.rig) === null || _b === void 0 ? void 0 : _b.info) === null || _c === void 0 ? void 0 : _c.call(_b, 'Starting teardown after test failure');
             for (const entry of this.rigFailureTeardownEntries) {
-                this.reporter.printWhite(TestReporter_1.Indent.TestHeader, `Tearing down on failure: ${entry.request.id}`);
+                (_f = (_e = (_d = this.reporter.log) === null || _d === void 0 ? void 0 : _d.test) === null || _e === void 0 ? void 0 : _e.info) === null || _f === void 0 ? void 0 : _f.call(_e, `Tearing down on failure: ${entry.request.id}`);
                 try {
-                    yield ((_b = (_a = entry.request).rigFailureTeardown) === null || _b === void 0 ? void 0 : _b.call(_a, entry.testStepResponseContext));
+                    yield ((_h = (_g = entry.request).rigFailureTeardown) === null || _h === void 0 ? void 0 : _h.call(_g, entry.testStepResponseContext));
                 }
                 catch (error) {
                     // Only log, all teardown steps should be attempted
                 }
             }
-            this.reporter.printBlue(TestReporter_1.Indent.TestRig, 'Teardown after test failure completed');
+            (_l = (_k = (_j = this.reporter.log) === null || _j === void 0 ? void 0 : _j.rig) === null || _k === void 0 ? void 0 : _k.info) === null || _l === void 0 ? void 0 : _l.call(_k, 'Teardown after test failure completed');
         });
     }
 }

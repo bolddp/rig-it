@@ -1,5 +1,5 @@
 import { TestResponse } from '../connector/TestResponse';
-import { Indent, TestReporter } from './TestReporter';
+import { Indent, TestReporter, TestReporterLogger } from './TestReporter';
 
 export class CompositeReporter implements TestReporter {
   private reporters: TestReporter[];
@@ -14,35 +14,23 @@ export class CompositeReporter implements TestReporter {
     });
   }
 
-  printWhite(indent: Indent, msg: string): void {
-    this.reporters.forEach((logger) => {
-      logger.printWhite(indent, msg);
-    });
-  }
-
-  printBlue(indent: Indent, msg: string): void {
-    this.reporters.forEach((logger) => {
-      logger.printBlue(indent, msg);
-    });
-  }
-
-  printGreen(indent: Indent, msg: string): void {
-    this.reporters.forEach((logger) => {
-      logger.printGreen(indent, msg);
-    });
-  }
-
-  printRed(indent: Indent, msg: string): void {
-    this.reporters.forEach((logger) => {
-      logger.printRed(indent, msg);
-    });
-  }
-
-  printGray(indent: Indent, msg: string): void {
-    this.reporters.forEach((logger) => {
-      logger.printGray(indent, msg);
-    });
-  }
+  log: TestReporterLogger = {
+    rig: {
+      info: (msg) => this.reporters.forEach((r) => r.log?.rig?.info?.(msg)),
+      success: (msg) => this.reporters.forEach((r) => r.log?.rig?.success?.(msg)),
+      error: (msg) => this.reporters.forEach((r) => r.log?.rig?.error?.(msg)),
+    },
+    test: {
+      info: (msg) => this.reporters.forEach((r) => r.log?.test?.info?.(msg)),
+      success: (msg) => this.reporters.forEach((r) => r.log?.test?.success?.(msg)),
+      error: (msg) => this.reporters.forEach((r) => r.log?.test?.error?.(msg)),
+    },
+    testStep: {
+      info: (msg) => this.reporters.forEach((r) => r.log?.testStep?.info?.(msg)),
+      success: (msg) => this.reporters.forEach((r) => r.log?.testStep?.success?.(msg)),
+      error: (msg) => this.reporters.forEach((r) => r.log?.testStep?.error?.(msg)),
+    },
+  };
 
   async reportTestResponse?(testId: string, response: TestResponse): Promise<void> {
     for (const logger of this.reporters) {

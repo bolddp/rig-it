@@ -2,6 +2,9 @@ import { TestResponse } from '../connector/TestResponse';
 import { TestRig } from '../rig/TestRig';
 import { Test } from './Test';
 
+/**
+ * Contains data and operations that can be used in the test steps arrange() and act().
+ */
 export interface TestStepContext {
   /**
    * The test rig that this test step belongs to.
