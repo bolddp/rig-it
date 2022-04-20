@@ -1,8 +1,8 @@
 import chalk from 'chalk';
-import { TestReporter, TestReporterLogger } from './TestReporter';
+import { TestReporter, OptionalTestReporterLoggers } from './TestReporter';
 
 export class ConsoleReporter implements TestReporter {
-  log: TestReporterLogger = {
+  log: OptionalTestReporterLoggers = {
     rig: {
       info: (msg) => this.logRow(0, chalk.blue(msg)),
       error: (msg) => this.logRow(0, chalk.red(msg)),

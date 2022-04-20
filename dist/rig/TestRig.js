@@ -42,7 +42,11 @@ class TestRig {
             (_e = (_d = (_c = this.reporter.log) === null || _c === void 0 ? void 0 : _c.rig) === null || _d === void 0 ? void 0 : _d.info) === null || _e === void 0 ? void 0 : _e.call(_d, ((_f = this.config) === null || _f === void 0 ? void 0 : _f.name) ? `Starting: ${this.config.name}` : 'Starting');
             try {
                 yield fnc({
-                    rig: this,
+                    logger: {
+                        info: (msg) => { var _a, _b, _c; return (_c = (_b = (_a = this.reporter.log) === null || _a === void 0 ? void 0 : _a.test) === null || _b === void 0 ? void 0 : _b.info) === null || _c === void 0 ? void 0 : _c.call(_b, msg); },
+                        success: (msg) => { var _a, _b, _c; return (_c = (_b = (_a = this.reporter.log) === null || _a === void 0 ? void 0 : _a.test) === null || _b === void 0 ? void 0 : _b.success) === null || _c === void 0 ? void 0 : _c.call(_b, msg); },
+                        error: (msg) => { var _a, _b, _c; return (_c = (_b = (_a = this.reporter.log) === null || _a === void 0 ? void 0 : _a.test) === null || _b === void 0 ? void 0 : _b.error) === null || _c === void 0 ? void 0 : _c.call(_b, msg); },
+                    },
                     createConnector: (config) => {
                         return new TestConnector_1.TestConnector(config, this.reporter);
                     },

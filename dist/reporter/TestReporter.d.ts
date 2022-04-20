@@ -1,22 +1,22 @@
 import { TestResponse } from '../connector/TestResponse';
 export interface TestReporter {
     setup?(): Promise<void>;
-    log?: TestReporterLogger;
+    log?: OptionalTestReporterLoggers;
     reportTestResponse?(testId: string, response: TestResponse): Promise<void>;
     finish?(success: boolean): Promise<void>;
 }
-export interface TestReporterLoggerLevels {
+export interface OptionalTestReporterLogger {
     info?: (msg: string) => void;
     success?: (msg: string) => void;
     error?: (msg: string) => void;
 }
-export interface TestReporterLogger {
-    rig?: TestReporterLoggerLevels;
-    test?: TestReporterLoggerLevels;
-    testStep?: TestReporterLoggerLevels;
+export interface OptionalTestReporterLoggers {
+    rig?: OptionalTestReporterLogger;
+    test?: OptionalTestReporterLogger;
+    testStep?: OptionalTestReporterLogger;
 }
-export declare enum Indent {
-    TestRig = 0,
-    TestHeader = 1,
-    TestContent = 2
+export interface TestReporterLogger {
+    info: (msg: string) => void;
+    success: (msg: string) => void;
+    error: (msg: string) => void;
 }

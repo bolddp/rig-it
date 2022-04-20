@@ -53,7 +53,11 @@ export class TestRig {
     );
     try {
       await fnc({
-        rig: this,
+        logger: {
+          info: (msg) => this.reporter.log?.test?.info?.(msg),
+          success: (msg) => this.reporter.log?.test?.success?.(msg),
+          error: (msg) => this.reporter.log?.test?.error?.(msg),
+        },
         createConnector: (config: TestConnectorConfig): TestConnector => {
           return new TestConnector(config, this.reporter);
         },

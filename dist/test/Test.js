@@ -18,8 +18,11 @@ class Test {
         var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r;
         return __awaiter(this, void 0, void 0, function* () {
             const ctx = {
-                rig: this.config.rig,
-                test: this,
+                logger: {
+                    info: (msg) => { var _a, _b, _c; return (_c = (_b = (_a = this.config.reporter.log) === null || _a === void 0 ? void 0 : _a.testStep) === null || _b === void 0 ? void 0 : _b.info) === null || _c === void 0 ? void 0 : _c.call(_b, msg); },
+                    success: (msg) => { var _a, _b, _c; return (_c = (_b = (_a = this.config.reporter.log) === null || _a === void 0 ? void 0 : _a.testStep) === null || _b === void 0 ? void 0 : _b.success) === null || _c === void 0 ? void 0 : _c.call(_b, msg); },
+                    error: (msg) => { var _a, _b, _c; return (_c = (_b = (_a = this.config.reporter.log) === null || _a === void 0 ? void 0 : _a.testStep) === null || _b === void 0 ? void 0 : _b.error) === null || _c === void 0 ? void 0 : _c.call(_b, msg); },
+                },
                 removeFailureTeardown: (id) => {
                     var _a, _b, _c;
                     const count = this.config.rig.removeRigFailureTeardown(id);

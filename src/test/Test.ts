@@ -1,4 +1,4 @@
-import { Indent, TestReporter } from '../reporter/TestReporter';
+import { TestReporter } from '../reporter/TestReporter';
 import { TeardownEntry, TestRig } from '../rig/TestRig';
 import { TestSetup } from './TestSetup';
 import { TestStepContext, TestStepResponseContext } from './TestStepContext';
@@ -17,8 +17,11 @@ export class Test {
 
   async execute(request: TestSetup): Promise<any> {
     const ctx: TestStepContext = {
-      rig: this.config.rig,
-      test: this,
+      logger: {
+        info: (msg) => this.config.reporter.log?.testStep?.info?.(msg),
+        success: (msg) => this.config.reporter.log?.testStep?.success?.(msg),
+        error: (msg) => this.config.reporter.log?.testStep?.error?.(msg),
+      },
       removeFailureTeardown: (id) => {
         const count = this.config.rig.removeRigFailureTeardown(id);
         this.config.reporter.log?.testStep?.info?.(

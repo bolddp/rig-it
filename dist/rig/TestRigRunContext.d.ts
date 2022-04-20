@@ -1,8 +1,8 @@
 import { TestConnector, TestConnectorConfig } from '../connector/TestConnector';
-import { TestRig } from './TestRig';
 import { TestSetup } from '../test/TestSetup';
+import { TestReporterLogger } from '../reporter/TestReporter';
 export interface TestRigRunContext {
-    rig: TestRig;
+    logger: TestReporterLogger;
     createConnector(config: TestConnectorConfig): TestConnector;
     test(request: TestSetup): Promise<any>;
 }

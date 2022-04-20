@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { TestResponse } from '../connector/TestResponse';
-import { Indent, TestReporter, TestReporterLogger } from './TestReporter';
+import { TestReporter, OptionalTestReporterLoggers } from './TestReporter';
 
 export interface FileReporterConfig {
   /**
@@ -22,7 +22,7 @@ export class FileReporter implements TestReporter {
   private config: FileReporterConfig;
   private logRows: string[] = [];
 
-  log: TestReporterLogger = {
+  log: OptionalTestReporterLoggers = {
     rig: {
       info: (msg) => this.logRow(0, msg),
       error: (msg) => this.logRow(0, msg),

@@ -1,5 +1,5 @@
 import { TestResponse } from '../connector/TestResponse';
-import { Indent, TestReporter, TestReporterLogger } from './TestReporter';
+import { TestReporter, OptionalTestReporterLoggers } from './TestReporter';
 
 export class CompositeReporter implements TestReporter {
   private reporters: TestReporter[];
@@ -14,7 +14,7 @@ export class CompositeReporter implements TestReporter {
     });
   }
 
-  log: TestReporterLogger = {
+  log: OptionalTestReporterLoggers = {
     rig: {
       info: (msg) => this.reporters.forEach((r) => r.log?.rig?.info?.(msg)),
       success: (msg) => this.reporters.forEach((r) => r.log?.rig?.success?.(msg)),

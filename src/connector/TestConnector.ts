@@ -1,7 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosRequestHeaders, Method } from 'axios';
 import { TestResponse } from './TestResponse';
-import { TestRig } from '../rig/TestRig';
-import { Indent, TestReporter } from '../reporter/TestReporter';
+import { TestReporter } from '../reporter/TestReporter';
 
 const DEFAULT_REQUEST_TIMEOUT = 5000;
 

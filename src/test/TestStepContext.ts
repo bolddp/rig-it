@@ -1,19 +1,14 @@
 import { TestResponse } from '../connector/TestResponse';
-import { TestRig } from '../rig/TestRig';
-import { Test } from './Test';
+import { TestReporterLogger } from '../reporter/TestReporter';
 
 /**
  * Contains data and operations that can be used in the test steps arrange() and act().
  */
 export interface TestStepContext {
   /**
-   * The test rig that this test step belongs to.
+   * Use this logger to output customized log messages during the test execution.
    */
-  rig: TestRig;
-  /**
-   * The test that this test step belongs to.
-   */
-  test: Test;
+  logger: TestReporterLogger;
   /**
    * This function can be used to remove a success teardown function that was added by a previous test,
    * e.g. if this test performs the same cleanup action as the teardown would.

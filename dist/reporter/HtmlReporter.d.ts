@@ -1,5 +1,9 @@
-import { TestReporter, TestReporterLogger } from './TestReporter';
+import { TestReporter, OptionalTestReporterLoggers } from './TestReporter';
 export interface HtmlReporterConfig {
+    /**
+     * The full path to the filename where the HTML logs should be persisted.
+     * If the path doesn't exist, the reporter will try to create it recursively.
+     */
     fileName: string;
 }
 export declare class HtmlReporter implements TestReporter {
@@ -7,7 +11,7 @@ export declare class HtmlReporter implements TestReporter {
     private lines;
     constructor(config: HtmlReporterConfig);
     private htmlLog;
-    log: TestReporterLogger;
+    log: OptionalTestReporterLoggers;
     finish(): Promise<void>;
 }
 export declare type HtmlReporterCallback = (html: string) => Promise<void>;

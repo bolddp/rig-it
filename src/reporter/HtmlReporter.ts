@@ -1,6 +1,6 @@
 import * as path from 'path';
 import * as fs from 'fs';
-import { Indent, TestReporter, TestReporterLogger } from './TestReporter';
+import { TestReporter, OptionalTestReporterLoggers } from './TestReporter';
 
 export interface HtmlReporterConfig {
   /**
@@ -18,7 +18,7 @@ export class HtmlReporter implements TestReporter {
     this.config = config;
   }
 
-  private htmlLog(indent: Indent, color: string, msg: string) {
+  private htmlLog(indent: number, color: string, msg: string) {
     this.lines.push(
       `<p style="color: ${color}">${'&nbsp;'.repeat(indent * indentSize)}${msg.replace(
         /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g,
@@ -27,7 +27,7 @@ export class HtmlReporter implements TestReporter {
     );
   }
 
-  log: TestReporterLogger = {
+  log: OptionalTestReporterLoggers = {
     rig: {
       info: (msg) => this.htmlLog(0, blueColor, msg),
       error: (msg) => this.htmlLog(0, redColor, msg),
