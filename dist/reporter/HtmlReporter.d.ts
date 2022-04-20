@@ -1,4 +1,4 @@
-import { TestReporter, OptionalTestReporterLoggers } from './TestReporter';
+import { OptionalTestReporterLoggers, TestReporter } from './TestReporter';
 export interface HtmlReporterConfig {
     /**
      * The full path to the filename where the HTML logs should be persisted.

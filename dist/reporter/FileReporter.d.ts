@@ -1,5 +1,5 @@
 import { TestResponse } from '../connector/TestResponse';
-import { TestReporter, OptionalTestReporterLoggers } from './TestReporter';
+import { OptionalTestReporterLoggers, TestReporter } from './TestReporter';
 export interface FileReporterConfig {
     /**
      * Function that resolves the filename where the response JSON of a tests act()

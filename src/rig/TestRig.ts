@@ -28,6 +28,7 @@ export class TestRig {
   private reporter: CompositeReporter;
   private rigFailureTeardownEntries: TeardownEntry[] = [];
   private rigSuccessTeardownEntries: TeardownEntry[] = [];
+  private testIds: string[] = [];
 
   constructor(config?: TestRigConfig) {
     this.config = config;
@@ -63,11 +64,18 @@ export class TestRig {
         },
         test: async (request: TestSetup): Promise<any> => {
           try {
+            if (this.testIds.includes(request.id)) {
+              throw new Error(`Duplicate test id: ${request.id}`);
+            } else {
+              this.testIds.push(request.id);
+            }
+
             const test = new Test({
               rig: this,
               reporter: this.reporter,
             });
             const rsp = await test.execute(request);
+
             return rsp;
           } catch (error: any) {
             this.reporter.log?.testStep?.error?.(error.message);

@@ -1,6 +1,6 @@
 import * as path from 'path';
 import * as fs from 'fs';
-import { TestReporter, OptionalTestReporterLoggers } from './TestReporter';
+import { OptionalTestReporterLoggers, TestReporter } from './TestReporter';
 
 export interface HtmlReporterConfig {
   /**

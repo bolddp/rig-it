@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { TestReporter, OptionalTestReporterLoggers } from './TestReporter';
+import { OptionalTestReporterLoggers, TestReporter } from './TestReporter';
 
 export class ConsoleReporter implements TestReporter {
   log: OptionalTestReporterLoggers = {

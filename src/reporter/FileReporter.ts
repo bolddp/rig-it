@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { TestResponse } from '../connector/TestResponse';
-import { TestReporter, OptionalTestReporterLoggers } from './TestReporter';
+import { OptionalTestReporterLoggers, TestReporter } from './TestReporter';
 
 export interface FileReporterConfig {
   /**

@@ -4,6 +4,10 @@ import { TestStepContext, TestStepResponseContext } from './TestStepContext';
  * Describes the setup of a test.
  */
 export interface TestSetup {
+    /**
+     * The id of the test, for logging and logic operation purposes. This id needs to be unique during
+     * the execution of a test run.
+     */
     id: string;
     /**
      * Add code here to perform preparations for test, if necessary.

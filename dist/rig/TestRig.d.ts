@@ -20,6 +20,7 @@ export declare class TestRig {
     private reporter;
     private rigFailureTeardownEntries;
     private rigSuccessTeardownEntries;
+    private testIds;
     constructor(config?: TestRigConfig);
     private createCompositeReporter;
     getConfig(): TestRigConfig | undefined;

@@ -1,4 +1,4 @@
-import { TestReporter, OptionalTestReporterLoggers } from './TestReporter';
+import { OptionalTestReporterLoggers, TestReporter } from './TestReporter';
 export declare class ConsoleReporter implements TestReporter {
     log: OptionalTestReporterLoggers;
     private logRow;

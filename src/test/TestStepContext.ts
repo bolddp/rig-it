@@ -24,5 +24,9 @@ export interface TestStepContext {
 }
 
 export interface TestStepResponseContext extends TestStepContext {
+  /**
+   * Contains the response from the act() function of the test, e.g. HTTP headers and status code,
+   * as well as the response body, if there was any.
+   */
   response?: TestResponse;
 }

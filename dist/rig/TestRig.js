@@ -22,6 +22,7 @@ class TestRig {
     constructor(config) {
         this.rigFailureTeardownEntries = [];
         this.rigSuccessTeardownEntries = [];
+        this.testIds = [];
         this.config = config;
         this.reporter = this.createCompositeReporter(config === null || config === void 0 ? void 0 : config.reporters);
     }
@@ -53,6 +54,12 @@ class TestRig {
                     test: (request) => __awaiter(this, void 0, void 0, function* () {
                         var _s, _t, _u;
                         try {
+                            if (this.testIds.includes(request.id)) {
+                                throw new Error(`Duplicate test id: ${request.id}`);
+                            }
+                            else {
+                                this.testIds.push(request.id);
+                            }
                             const test = new Test_1.Test({
                                 rig: this,
                                 reporter: this.reporter,
