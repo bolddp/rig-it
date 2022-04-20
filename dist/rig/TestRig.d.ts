@@ -24,6 +24,9 @@ export declare class TestRig {
     constructor(config?: TestRigConfig);
     private createCompositeReporter;
     getConfig(): TestRigConfig | undefined;
+    /**
+     * Runs the test rig, keeping track of the test in it and performing teardown, logging etc.
+     */
     run(fnc: TestRigRunFunction): Promise<void>;
     addRigFailureTeardown(entry: TeardownEntry): void;
     addRigSuccessTeardown(entry: TeardownEntry): void;

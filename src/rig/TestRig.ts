@@ -46,6 +46,9 @@ export class TestRig {
     return this.config;
   }
 
+  /**
+   * Runs the test rig, keeping track of the test in it and performing teardown, logging etc.
+   */
   async run(fnc: TestRigRunFunction) {
     let isSuccess = true;
     await this.reporter.setup?.();

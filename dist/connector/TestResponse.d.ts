@@ -1,8 +1,8 @@
 import { AxiosResponseHeaders } from 'axios';
 export interface TestResponse {
-    status?: number;
     isOk: boolean;
-    headers: AxiosResponseHeaders;
+    status?: number;
+    headers?: AxiosResponseHeaders;
     data?: any;
     errorMessage?: string;
 }

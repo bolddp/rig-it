@@ -1,6 +1,9 @@
 import chalk from 'chalk';
 import { OptionalTestReporterLoggers, TestReporter } from './TestReporter';
 
+/**
+ * Produces indented, colored (and thereby highly readable) logs to console.
+ */
 export class ConsoleReporter implements TestReporter {
   log: OptionalTestReporterLoggers = {
     rig: {

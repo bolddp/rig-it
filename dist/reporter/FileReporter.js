@@ -35,6 +35,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.FileReporter = void 0;
 const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
+/**
+ * Test reporter that logs to file. This includes the responses from the tests, if
+ * the FileReporterConfig.testResponseFileNameResolver property is set.
+ *
+ * If the path of a file that is about to be written by the reporter doesn't exist,
+ * the reporter will try to create it.
+ */
 class FileReporter {
     constructor(config) {
         this.logRows = [];
@@ -70,9 +77,8 @@ class FileReporter {
         });
     }
     finish() {
-        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            const fileName = (_b = (_a = this.config).logsFileNameResolver) === null || _b === void 0 ? void 0 : _b.call(_a);
+            const fileName = this.config.logsFileName;
             if (fileName) {
                 yield this.writeFile({
                     fileName,

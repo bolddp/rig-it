@@ -15,28 +15,29 @@ export interface TestSetup {
    */
   arrange?: (ctx: TestStepContext) => Promise<void>;
   /**
-   * Add code to perform the test here. The act() function must return a {@link TestResponse} that
-   * can be asserted. Usually the test response should come from an API call made by a {@link TestConnector}.
-   * If you're tempted to add code that does not return any response in the act() method,
-   * you can add the code to the arrange() method instead.
+   * Add code to perform the test here. The act() function must at the minimum return a {@link TestResponse}
+   * where the isOk property is set, to indicate if the action was a success or failure.
+   * The simplest way to return a usable result, if the test consists of an API call, is to use the {@link TestConnector}
+   * class, that can perform HTTP calls and return them as TestResponses.
    */
   act: (ctx: TestStepContext) => Promise<TestResponse>;
   /**
-   * Perform assertions on the data returned by the act() function. If the act() method is expected to fail,
-   * e.g. due to testing applying invalid data, use the assertError() function to perform the assertion instead.
-   *
-   * The response from the act() method is available in the ctx.response property.
+   * If the act() function returns a response, e.g. from a {@link TestConnector}, and you expect the call to
+   * succeed, you can perform your assertions in this function.
+   * If this property is set and the act() functions returns a failure response, the test is considered a failure.
+   * This also applies if either the assert() or the assertError() functions are set.
    *
    * If both this function and the assertError() function is set, an error is thrown since a test cannot
    * be expected to succeed and fail at the same time.
    */
   assert?: (ctx: TestStepResponseContext) => Promise<void>;
   /**
-   * Perform assertions on the data returned by the act() function, when you're expecting the call to fail.
+   * If the act() function returns a response, e.g. from a {@link TestConnector}, but you expect the call to
+   * be a failure, you should perform your assertions in this function to indicate that the failure is expected.
    * If this property is set and the act() function succeeds, the test is considered a failure.
    *
    * If both this function and the assertError() function is set, an error is thrown since a test cannot
-   * be expected to succeed and fail at the same time.
+   * be expected to both succeed and fail at the same time.
    */
   assertError?: (ctx: TestStepResponseContext) => Promise<void>;
   /**

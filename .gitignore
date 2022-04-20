@@ -1,2 +1,4 @@
 /node_modules
+/sample-test-result
+
 *.js.map

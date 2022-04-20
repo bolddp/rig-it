@@ -8,12 +8,19 @@ export interface FileReporterConfig {
      */
     testResponseFileNameResolver?: (testId: string) => string;
     /**
-     * Function that resolves the filename where the log rows text file should be stored
+     * The full path where the log rows text file should be stored
      * at the end of the test rig run. If this is not defined, the logs will not be
      * persisted to file.
      */
-    logsFileNameResolver?: () => string;
+    logsFileName?: string;
 }
+/**
+ * Test reporter that logs to file. This includes the responses from the tests, if
+ * the FileReporterConfig.testResponseFileNameResolver property is set.
+ *
+ * If the path of a file that is about to be written by the reporter doesn't exist,
+ * the reporter will try to create it.
+ */
 export declare class FileReporter implements TestReporter {
     private config;
     private logRows;

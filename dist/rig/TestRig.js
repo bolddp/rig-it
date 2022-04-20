@@ -35,6 +35,9 @@ class TestRig {
     getConfig() {
         return this.config;
     }
+    /**
+     * Runs the test rig, keeping track of the test in it and performing teardown, logging etc.
+     */
     run(fnc) {
         var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r;
         return __awaiter(this, void 0, void 0, function* () {

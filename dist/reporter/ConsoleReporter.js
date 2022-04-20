@@ -5,6 +5,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ConsoleReporter = void 0;
 const chalk_1 = __importDefault(require("chalk"));
+/**
+ * Produces indented, colored (and thereby highly readable) logs to console.
+ */
 class ConsoleReporter {
     constructor() {
         this.log = {
