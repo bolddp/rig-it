@@ -40,7 +40,7 @@ testRig.run(async (testContext) => {
   // connector.setHeader('Authorization', `Bearer ${token}`);
 
   // Add your own customized log rows where necessary
-  testContext.logger.info('Authentication succeeded!');
+  testContext.logger.info('Customized logging: Authentication succeeded!');
 
   // Create blog post
   const newPost = await testContext.test({
@@ -90,7 +90,7 @@ testRig.run(async (testContext) => {
     act: async (ctx) => {
       // Now it's no longer necessary to delete this post as part of failure teardown, so we remove it.
       // If we hadn't, that teardown step would have failed with a 404, but failures during teardown
-      // are ignored, so any other teardowns that were scheduled for execution would have been
+      // are ignored, so any other teardown steps that were scheduled for execution would have been
       // carried out anyway.
       ctx.removeFailureTeardown('create.post');
 

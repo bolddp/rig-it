@@ -5,16 +5,16 @@ import { TestReporter } from '../reporter/TestReporter';
 const DEFAULT_REQUEST_TIMEOUT = 5000;
 
 export class TestConnector {
-  private logger: TestReporter;
+  private reporter: TestReporter;
   private config: TestConnectorConfig;
   private axiosConfig: AxiosRequestConfig;
   private bearerToken?: string;
   private basicAuth?: string;
   private xApiKey?: string;
 
-  constructor(config: TestConnectorConfig, logger: TestReporter) {
+  constructor(config: TestConnectorConfig, reporter: TestReporter) {
     this.config = config;
-    this.logger = logger;
+    this.reporter = reporter;
     this.axiosConfig = {
       baseURL: this.config.baseUrl,
       timeout: this.config.timeoutMs ?? DEFAULT_REQUEST_TIMEOUT,
@@ -98,10 +98,12 @@ export class TestConnector {
   async request(request: TestConnectorMethodRequest): Promise<TestResponse> {
     const config = this.constructCompositeAxiosConfig(request);
     const ts = Date.now();
-    this.logger?.log?.testStep?.info?.(`${config.method} ${config.baseURL}${axios.getUri(config)}`);
+    this.reporter?.log?.testStep?.info?.(
+      `${config.method} ${config.baseURL}${axios.getUri(config)}`
+    );
     try {
       const response = await axios.request(config);
-      this.logger.log?.testStep?.success?.(
+      this.reporter.log?.testStep?.success?.(
         `HTTP ${response.status} - ${JSON.stringify(response.data ?? '').length} bytes in ${
           Date.now() - ts
         } ms`
@@ -115,12 +117,12 @@ export class TestConnector {
     } catch (error: any) {
       if (!error.response) {
         // No response at all was received, e.g. timeout or invalid URL
-        this.logger.log?.testStep?.error?.(
+        this.reporter.log?.testStep?.error?.(
           `${config.method} failed in ${Date.now() - ts} ms : ${error.message}`
         );
         throw error;
       }
-      this.logger.log?.testStep?.error?.(
+      this.reporter.log?.testStep?.error?.(
         `HTTP ${error.response.status} - ${
           JSON.stringify(error.response.data ?? '').length
         } bytes in ${Date.now() - ts} ms`

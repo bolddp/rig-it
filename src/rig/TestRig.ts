@@ -12,6 +12,7 @@ export type TestRigRunFunction = (ctx: TestRigRunContext) => Promise<any>;
 export interface TestRigConfig {
   reporters?: TestReporter[];
   name?: string;
+  testConnectorFactory?: (config: TestConnectorConfig, logger: TestReporter) => TestConnector;
 }
 
 export interface TeardownEntry {
@@ -42,10 +43,6 @@ export class TestRig {
     return new CompositeReporter(reporters!);
   }
 
-  getConfig(): TestRigConfig | undefined {
-    return this.config;
-  }
-
   /**
    * Runs the test rig, keeping track of the test in it and performing teardown, logging etc.
    */
@@ -63,7 +60,10 @@ export class TestRig {
           error: (msg) => this.reporter.log?.test?.error?.(msg),
         },
         createConnector: (config: TestConnectorConfig): TestConnector => {
-          return new TestConnector(config, this.reporter);
+          return (
+            this.config?.testConnectorFactory?.(config, this.reporter) ??
+            new TestConnector(config, this.reporter)
+          );
         },
         test: async (request: TestSetup): Promise<any> => {
           try {
