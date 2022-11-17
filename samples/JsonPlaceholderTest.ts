@@ -1,12 +1,3 @@
-# rig-it - The integration test rig!
-
-Test rig for writing reliable, repeatable integration tests in Node.js
-
-## Sample code
-
-This sample test is included in the project in folder _./samples_. It tries to showcase most features of rig-it.
-
-```
 import expect from 'expect';
 import { ConsoleReporter } from '../src/reporter/ConsoleReporter';
 import { FileReporter } from '../src/reporter/FileReporter';
@@ -106,13 +97,3 @@ testRig.run(async (testContext: TestRigRunContext) => {
     },
   });
 });
-```
-
-### Run the sample locally
-
-```
-> npm install
-> npx ts-node ./samples/JsonPlaceholderTest.ts
-```
-
-If everything goes well, the results from the sample test will be available in folder **./sample-test-result**
