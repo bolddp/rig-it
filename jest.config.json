@@ -1,0 +1,22 @@
+{
+  "preset": "ts-jest",
+  "rootDir": "./",
+  "verbose": false,
+  "watchPathIgnorePatterns": ["<rootDir>/jest.json"],
+  "collectCoverage": false,
+  "testRegex": "_test.(t|j)s$",
+  "clearMocks": true,
+  "moduleNameMapper": {
+    "^app/(.*)$": "<rootDir>/src/$1"
+  },
+  "collectCoverageFrom": ["src/**/*.{js,ts}", "!**/node_modules/**"],
+  "coverageReporters": ["cobertura", "text", "lcov"],
+  "coverageDirectory": "./coverage",
+  "reporters": ["default", "jest-stare"],
+  "globals": {
+    "ts-jest": {
+      "tsconfig": "<rootDir>/test/tsconfig.json",
+      "isolatedModules": true
+    }
+  }
+}
