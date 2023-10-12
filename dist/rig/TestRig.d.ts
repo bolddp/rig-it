@@ -3,7 +3,7 @@ import { TestReporter } from '../reporter/TestReporter';
 import { TestSetup } from '../test/TestSetup';
 import { TestRigRunContext } from './TestRigRunContext';
 import { TestStepResponseContext } from '../test/TestStepContext';
-export declare type TestRigRunFunction = (ctx: TestRigRunContext) => Promise<any>;
+export type TestRigRunFunction = (ctx: TestRigRunContext) => Promise<any>;
 export interface TestRigConfig {
     reporters?: TestReporter[];
     name?: string;

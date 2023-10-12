@@ -14,4 +14,4 @@ export declare class HtmlReporter implements TestReporter {
     log: OptionalTestReporterLoggers;
     finish(): Promise<void>;
 }
-export declare type HtmlReporterCallback = (html: string) => Promise<void>;
+export type HtmlReporterCallback = (html: string) => Promise<void>;

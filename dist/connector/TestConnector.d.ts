@@ -33,7 +33,7 @@ export declare class TestConnector {
     post(request: TestConnectorRequest): Promise<TestResponse>;
     delete(request: TestConnectorRequest): Promise<TestResponse>;
 }
-export declare type RequestParams = {
+export type RequestParams = {
     [key: string]: any;
 };
 export interface TestConnectorConfig {
