@@ -1,6 +1,6 @@
 {
   "name": "rig-it",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Test rig for writing reproducable integration tests in Node.js",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/bolddp/rig-it#readme",
   "dependencies": {
-    "axios": "1.11.0",
+    "axios": "1.13.4",
     "chalk": "4.1.2"
   },
   "files": [
