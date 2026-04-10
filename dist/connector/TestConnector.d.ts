@@ -1,10 +1,9 @@
-import { AxiosRequestHeaders, Method } from 'axios';
 import { TestResponse } from './TestResponse';
 import { TestReporter } from '../reporter/TestReporter';
 export declare class TestConnector {
     private reporter;
     private config;
-    private axiosConfig;
+    private defaultHeaders;
     private bearerToken?;
     private basicAuth?;
     private xApiKey?;
@@ -17,7 +16,9 @@ export declare class TestConnector {
      */
     private constructParams;
     private constructBody;
-    private constructCompositeAxiosConfig;
+    private constructUrl;
+    private constructHeaders;
+    private headersToRecord;
     request(request: TestConnectorMethodRequest): Promise<TestResponse>;
     /**
      * Sets a request header on this connector, e.g. for authentication. The header will be present in
@@ -38,7 +39,7 @@ export type RequestParams = {
 };
 export interface TestConnectorConfig {
     baseUrl: string;
-    authHeaders?: AxiosRequestHeaders;
+    authHeaders?: Record<string, string>;
     timeoutMs?: number;
 }
 export interface TestConnectorRequest {
@@ -47,10 +48,10 @@ export interface TestConnectorRequest {
     formData?: {
         [key: string]: any;
     };
-    headers?: AxiosRequestHeaders;
+    headers?: Record<string, string>;
     params?: any;
     isUnauthorized?: boolean;
 }
 export interface TestConnectorMethodRequest extends TestConnectorRequest {
-    method: Method;
+    method: string;
 }

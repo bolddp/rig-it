@@ -1,4 +1,3 @@
-import axios, { AxiosRequestConfig, AxiosRequestHeaders, Method } from 'axios';
 import { TestResponse } from './TestResponse';
 import { TestReporter } from '../reporter/TestReporter';
 
@@ -7,7 +6,7 @@ const DEFAULT_REQUEST_TIMEOUT = 5000;
 export class TestConnector {
   private reporter: TestReporter;
   private config: TestConnectorConfig;
-  private axiosConfig: AxiosRequestConfig;
+  private defaultHeaders: Record<string, string>;
   private bearerToken?: string;
   private basicAuth?: string;
   private xApiKey?: string;
@@ -15,14 +14,10 @@ export class TestConnector {
   constructor(config: TestConnectorConfig, reporter: TestReporter) {
     this.config = config;
     this.reporter = reporter;
-    this.axiosConfig = {
-      baseURL: this.config.baseUrl,
-      timeout: this.config.timeoutMs ?? DEFAULT_REQUEST_TIMEOUT,
-      headers: {
-        ...config.authHeaders,
-        Accept: '*/*',
-        'Content-Type': 'application/json',
-      },
+    this.defaultHeaders = {
+      ...config.authHeaders,
+      Accept: '*/*',
+      'Content-Type': 'application/json',
     };
   }
 
@@ -49,92 +44,121 @@ export class TestConnector {
     }, {});
   }
 
-  private constructBody(request: TestConnectorMethodRequest): any {
+  private constructBody(request: TestConnectorMethodRequest): string | undefined {
     if (request.body) {
-      return request.body;
+      return JSON.stringify(request.body);
     }
     if (!request.formData) {
       return undefined;
     }
-    const formData = Object.keys(request.formData)
+    return Object.keys(request.formData)
       .map((key) => `${key}=${request.formData![key]}`)
       .join('&');
-    return formData;
   }
 
-  private constructCompositeAxiosConfig(request: TestConnectorMethodRequest) {
-    const result: AxiosRequestConfig = {
-      ...this.axiosConfig,
-      url: request.url,
-      data: this.constructBody(request),
-      headers: {
-        ...this.axiosConfig.headers,
-        ...(request.headers ?? {}),
-      },
-      params: this.constructParams(request.params),
-      method: request.method,
+  private constructUrl(request: TestConnectorMethodRequest): string {
+    const params = this.constructParams(request.params);
+    let url = `${this.config.baseUrl}${request.url}`;
+    if (params) {
+      const searchParams = new URLSearchParams(params);
+      url += `?${searchParams.toString()}`;
+    }
+    return url;
+  }
+
+  private constructHeaders(request: TestConnectorMethodRequest): Record<string, string> {
+    const headers: Record<string, string> = {
+      ...this.defaultHeaders,
+      ...(request.headers ?? {}),
     };
     if (!request.isUnauthorized) {
-      const authHeaders: { [key: string]: string } = {
-        'Authorization-Provider': 'husqvarna',
-      };
+      headers['Authorization-Provider'] = 'husqvarna';
       if (this.bearerToken) {
-        authHeaders['Authorization'] = `Bearer ${this.bearerToken}`;
+        headers['Authorization'] = `Bearer ${this.bearerToken}`;
       }
       if (this.basicAuth) {
-        authHeaders['Authorization'] = `Basic ${this.basicAuth}`;
+        headers['Authorization'] = `Basic ${this.basicAuth}`;
       }
       if (this.xApiKey) {
-        authHeaders['x-api-key'] = this.xApiKey;
+        headers['x-api-key'] = this.xApiKey;
       }
-      result.headers = {
-        ...result.headers,
-        ...authHeaders,
-      };
     }
+    return headers;
+  }
+
+  private headersToRecord(headers: Headers): Record<string, string> {
+    const result: Record<string, string> = {};
+    headers.forEach((value, key) => {
+      result[key] = value;
+    });
     return result;
   }
 
   async request(request: TestConnectorMethodRequest): Promise<TestResponse> {
-    const config = this.constructCompositeAxiosConfig(request);
+    const url = this.constructUrl(request);
+    const headers = this.constructHeaders(request);
+    const body = request.method !== 'GET' ? this.constructBody(request) : undefined;
     const ts = Date.now();
-    this.reporter?.log?.testStep?.info?.(
-      `${config.method} ${config.baseURL}${axios.getUri(config)}`
-    );
+    this.reporter?.log?.testStep?.info?.(`${request.method} ${url}`);
+
+    const controller = new AbortController();
+    const timeoutMs = this.config.timeoutMs ?? DEFAULT_REQUEST_TIMEOUT;
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
     try {
-      const response = await axios.request(config);
-      this.reporter.log?.testStep?.success?.(
-        `HTTP ${response.status} - ${JSON.stringify(response.data ?? '').length} bytes in ${
+      const response = await fetch(url, {
+        method: request.method,
+        headers,
+        body,
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+
+      let data: any;
+      const contentType = response.headers.get('content-type') ?? '';
+      const text = await response.text();
+      if (contentType.includes('application/json') && text) {
+        try {
+          data = JSON.parse(text);
+        } catch {
+          data = text;
+        }
+      } else {
+        data = text || undefined;
+      }
+
+      if (response.ok) {
+        this.reporter.log?.testStep?.success?.(
+          `HTTP ${response.status} - ${JSON.stringify(data ?? '').length} bytes in ${
+            Date.now() - ts
+          } ms`
+        );
+        return {
+          isOk: true,
+          status: response.status,
+          headers: this.headersToRecord(response.headers),
+          data,
+        };
+      }
+
+      this.reporter.log?.testStep?.error?.(
+        `HTTP ${response.status} - ${JSON.stringify(data ?? '').length} bytes in ${
           Date.now() - ts
         } ms`
       );
       return {
-        isOk: true,
+        isOk: false,
         status: response.status,
-        headers: response.headers,
-        data: response.data,
+        headers: this.headersToRecord(response.headers),
+        errorMessage: response.statusText,
+        data,
       };
     } catch (error: any) {
-      if (!error.response) {
-        // No response at all was received, e.g. timeout or invalid URL
-        this.reporter.log?.testStep?.error?.(
-          `${config.method} failed in ${Date.now() - ts} ms : ${error.message}`
-        );
-        throw error;
-      }
+      clearTimeout(timeoutId);
       this.reporter.log?.testStep?.error?.(
-        `HTTP ${error.response.status} - ${
-          JSON.stringify(error.response.data ?? '').length
-        } bytes in ${Date.now() - ts} ms`
+        `${request.method} failed in ${Date.now() - ts} ms : ${error.message}`
       );
-      const rsp: TestResponse = {
-        isOk: false,
-        status: error.response.status,
-        headers: error.response.headers,
-        errorMessage: error.response.statusText,
-        data: error.response.data,
-      };
-      return rsp;
+      throw error;
     }
   }
 
@@ -147,12 +171,9 @@ export class TestConnector {
    */
   setHeader(name: string, value: string | undefined) {
     if (value == undefined) {
-      delete this.axiosConfig.headers?.[name];
+      delete this.defaultHeaders[name];
     } else {
-      this.axiosConfig.headers = {
-        ...this.axiosConfig.headers,
-        [name]: value,
-      };
+      this.defaultHeaders[name] = value;
     }
   }
 
@@ -181,7 +202,7 @@ export type RequestParams = { [key: string]: any };
 
 export interface TestConnectorConfig {
   baseUrl: string;
-  authHeaders?: AxiosRequestHeaders;
+  authHeaders?: Record<string, string>;
   timeoutMs?: number;
 }
 
@@ -189,11 +210,11 @@ export interface TestConnectorRequest {
   url: string;
   body?: any;
   formData?: { [key: string]: any };
-  headers?: AxiosRequestHeaders;
+  headers?: Record<string, string>;
   params?: any;
   isUnauthorized?: boolean;
 }
 
 export interface TestConnectorMethodRequest extends TestConnectorRequest {
-  method: Method;
+  method: string;
 }

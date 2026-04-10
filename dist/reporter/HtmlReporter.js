@@ -22,54 +22,44 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HtmlReporter = void 0;
 const path = __importStar(require("path"));
 const fs = __importStar(require("fs"));
 class HtmlReporter {
+    config;
+    lines = [];
     constructor(config) {
-        this.lines = [];
-        this.log = {
-            rig: {
-                info: (msg) => this.htmlLog(0, blueColor, msg),
-                error: (msg) => this.htmlLog(0, redColor, msg),
-                success: (msg) => this.htmlLog(0, blueColor, msg),
-            },
-            test: {
-                info: (msg) => this.htmlLog(1, whiteColor, msg),
-                error: (msg) => this.htmlLog(1, redColor, msg),
-                success: (msg) => this.htmlLog(1, greenColor, msg),
-            },
-            testStep: {
-                info: (msg) => this.htmlLog(2, grayColor, msg),
-                error: (msg) => this.htmlLog(2, redColor, msg),
-                success: (msg) => this.htmlLog(2, greenColor, msg),
-            },
-        };
         this.config = config;
     }
     htmlLog(indent, color, msg) {
         this.lines.push(`<p style="color: ${color}">${'&nbsp;'.repeat(indent * indentSize)}${msg.replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '')}</p>`);
     }
-    finish() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const style = `<style>
+    log = {
+        rig: {
+            info: (msg) => this.htmlLog(0, blueColor, msg),
+            error: (msg) => this.htmlLog(0, redColor, msg),
+            success: (msg) => this.htmlLog(0, blueColor, msg),
+        },
+        test: {
+            info: (msg) => this.htmlLog(1, whiteColor, msg),
+            error: (msg) => this.htmlLog(1, redColor, msg),
+            success: (msg) => this.htmlLog(1, greenColor, msg),
+        },
+        testStep: {
+            info: (msg) => this.htmlLog(2, grayColor, msg),
+            error: (msg) => this.htmlLog(2, redColor, msg),
+            success: (msg) => this.htmlLog(2, greenColor, msg),
+        },
+    };
+    async finish() {
+        const style = `<style>
     p { margin: 0 }
     </style>`;
-            const body = `${style}<body style="background-color: #000000; font-family: sans-serif">${this.lines.join('')}</body>`;
-            const filePath = path.dirname(this.config.fileName);
-            fs.mkdirSync(filePath, { recursive: true });
-            fs.writeFileSync(this.config.fileName, body);
-        });
+        const body = `${style}<body style="background-color: #000000; font-family: sans-serif">${this.lines.join('')}</body>`;
+        const filePath = path.dirname(this.config.fileName);
+        fs.mkdirSync(filePath, { recursive: true });
+        fs.writeFileSync(this.config.fileName, body);
     }
 }
 exports.HtmlReporter = HtmlReporter;
